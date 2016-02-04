@@ -163,10 +163,10 @@ Another issue with PMI is its bias towards rare events \cite{TACL570} one way of
 %
 \begin{equation}
   \label{eq:lmi}
-  \operatorname{LMI}(x, y) = n\operatorname{PMI}(x, y)
+  \operatorname{LMI}(x, y) = n(x, y)\operatorname{PMI}(x, y)
 \end{equation}
 %
-where $n$ is the number of times $x$ was seen together with $y$. For clarity, we refer to $n$ weighted PMIs as \NPMI/, \NPPMI/ \NCPMI/ and \NPCPMI/. When frequency component is set to 1, it does not have an effect giving rise to explicit quantification labels: \PMI/, \PPMI/, \CPMI/ and \PCPMI/.
+where $n(x, y)$ is the number of times $x$ was seen together with $y$. For clarity, we refer to $n$ weighted PMIs as \NPMI/, \NPPMI/ \NCPMI/ and \NPCPMI/. When frequency component is set to 1, it does not have an effect giving rise to explicit quantification labels: \PMI/, \PPMI/, \CPMI/ and \PCPMI/.
 
 In addition to $1$ and $n$ frequencies, we experiment with $\log n$ frequency.
 
@@ -194,7 +194,7 @@ where $|C|$ is the size of the used corpus. We refer to this case as \textit{glo
 \subsection{Vector dimensionality}
 \label{sec:vect-dimens}
 
-As context words we select 1000, 2000, 3000, 5000, 10000, 20000, 30000, 40000 and 50000 most frequent nouns, verbs, adjectives and adverbs. All context words are part of speech tagged, but we do not make difference between refined word types, for example, we do not distinguish between transitive and ditransitive verbs.
+As context words we select 1000, 2000, 3000, 5000, 10000, 20000, 30000, 40000 and 50000 most frequent lemmatised nouns, verbs, adjectives and adverbs. All context words are part of speech tagged, but we do not make difference between refined word types, for example, we do not distinguish between transitive and ditransitive verbs.
 
 \subsection{Similarity metric}
 \label{sec:similarity-metric}
@@ -206,6 +206,33 @@ We test a widely used cosine based similarity, as well as correlation \cite{kiel
 
 For tasks that involve composition, we test the following operators: addition
 and multiplication \cite{mitchell2010composition}; Kronecker \cite{Grefenstette:2011:ETV:2140490.2140497}; Relational \cite{Grefenstette:2011:ESC:2145432.2145580}; Copy object and Copy subject \cite{Kartsaklis12aunified}; Frobenious addition, Frobenious multiplication and Frobenious outer \cite{kartsadrqpl2014}.
+
+\begin{figure*}[th]
+  \centering
+  \begin{tabular}{llr}
+    \toprule
+    % \multicolumn{2}{c}{Item} \\
+    % \cmidrule(r){1-2}
+    Parameter & Values \\
+    \midrule
+    \texttt{discr} & PMI, CPMI, PosPMI, PCPMI \\
+    \texttt{neg} & 0.5, 0.7, 1, 1.4, 2, 5 \\
+    \texttt{freq} & $1$, $n$, $\log n$ \\
+    \texttt{cds} & \textit{nan}, 1, 0.75 \\
+    Dimensionality & 1K, 2K, 3K, 5K, 10K, 20K, 30K, 40K, 50K \\
+    Similarity & cosine, correlation \\
+    \multirow{2}{*}{Compositional operator}
+              & add, mult, kron, relational,
+                copy-object, copy-subject, \\
+              & frobenious-add, frobenious-mult,
+                frobenious-outer
+    \\
+    Corpus & concatenation of ukWac and Wackypedia \\
+    Window size & 5 \\
+    \bottomrule
+  \end{tabular}
+  \caption{\textbf{Parameters and their values.}}
+\end{figure*}
 
 %\bibliographystyle{acl}
 % remove publisher, month etc from conf proceedings:
