@@ -75,12 +75,19 @@
 
 \def\PMI/{$1 \operatorname{PMI}$}
 \def\PPMI/{$1 \operatorname{PosPMI}$}
+\def\CPMI/{$1 \operatorname{CPMI}$}
+\def\PCPMI/{$1 \operatorname{PCPMI}$}
+
 \def\NPMI/{$n \operatorname{PMI}$}
 \def\NPPMI/{$n \operatorname{PosPMI}$}
-\def\NITTF/{$n \operatorname{ITTF}$}
+\def\NCPMI/{$n \operatorname{CPMI}$}
+\def\NPCPMI/{$n \operatorname{PCPMI}$}
+
 \def\logNPMI/{$\log n\operatorname{PMI}$}
 \def\logNPPMI/{$\log n\operatorname{PosPMI}$}
-\def\logNITTF/{$\log n\operatorname{ITTF}$}
+\def\logNCPMI/{$\log n \operatorname{CPMI}$}
+\def\logNPCPMI/{$\log n \operatorname{PCPMI}$}
+
 
 \maketitle
 \begin{abstract}
@@ -90,7 +97,7 @@
 \section{Introduction}
 \label{sec:introduction}
 
-\newcite{TACL570} suggested to optimize PMI with a  set of parameters adopted from predictive models of \newcite{mikolov2013efficient}, most notably \emph{shifted PMI} abbreviated as \texttt{neg} and \emph{context distribution smoothing} referred to as \texttt{cds}. Their experiments and thus the parameter selection recommendations use highly dimensional vector spaces, namely word vectors have almost 200,000 dimensions. In general, recent work on lexical distributional semantics with the results close to the state of the art involve vectors with a considerable dimensionality of hundreds of thousands \cite{baroni-dinu-kruszewski:2014:P14-1,kiela-clark:2014:CVSC}.
+\newcite{TACL570} suggested to optimize PMI with a  set of parameters adopted from predictive models of \newcite{mikolov2013efficient}, most notably \emph{shifted PMI} abbreviated as \texttt{neg} and \emph{context distribution smoothing} referred to as \texttt{cds}. Their experiments and thus the parameter selection recommendations use highly dimensional vector spaces, namely word vectors have almost 200000 dimensions. In general, recent work on lexical distributional semantics with the results close to the state of the art involve vectors with a considerable dimensionality of hundreds of thousands \cite{baroni-dinu-kruszewski:2014:P14-1,kiela-clark:2014:CVSC}.
 
 Contrary to the trend of employing highly dimensional vectors, older work on lexical distributional semantics and recent work on compositional distributional semantics employ vectors with much less dimensions, for example, 2000 \cite{Grefenstette:2011:ESC:2145432.2145580,kartsadrqpl2014,milajevs-EtAl:2014:EMNLP2014}, 3000 \cite{Dinu:2010:MDS:1870658.1870771,milajevs-purver:2014:CVSC} or 10000 \cite{polajnar-clark:2014:EACL,Baroni2010nouns}.
 
@@ -102,8 +109,103 @@ Such a mismatch in vector dimensionality selection across lexical and compositio
 \item Can the heuristics based on lexical tasks be transferred to compositional tasks?
 \end{itemize}
 
-To answer these questions we perform a systematic study of distributional models with a rich set of parameters on two lexical datasets: SimLex-999 \cite{hill2014simlex} and MEN \cite{Bruni:2014:MDS:2655713.2655714} and three compositional datasets: KS14 \cite{kartsadrqpl2014}, GS11 \cite{Grefenstette:2011:ESC:2145432.2145580} and PhraseRel.
+To answer these questions we perform a systematic study of distributional models with a rich set of parameters on two lexical datasets: SimLex-999 \cite{hill2014simlex} and MEN \cite{Bruni:2014:MDS:2655713.2655714}; and three compositional datasets: KS14 \cite{kartsadrqpl2014}, GS11 \cite{Grefenstette:2011:ESC:2145432.2145580} and PhraseRel.
 
+\section{Parameters}
+\label{sec:parameters}
+
+\subsection{PMI variants (\texttt{discr})}
+\label{sec:pmi-variants}
+
+Co-occurrence weightings schemes based on \emph{Point-wise mutual information} (PMI, Equation~\ref{eq:pmi}) have been successfully applied in distributional semantics (see for example \newcite{J90-1003}, \newcite{Turney:2010:FMV:1861751.1861756} and \newcite{NIPS2014_5477}).
+%
+\begin{equation}
+  \label{eq:pmi}
+  \operatorname{PMI}(x, y) = \log\frac{P(x,y)}{P(x)P(y)}
+\end{equation}
+
+PMI is not directly applicable to the co-occurrence counts because non-observed co-occurrences lead to infinite PMI values which in turn make it impossible to compute similarity. A straightforward ``fix'' to this problem is to replace all infinities with zeroes. Such a replacement preserve sparsity of the input co-occurrence matrix. Later in the paper, we use PMI to refer to a weighting with this fix.
+
+An alternative solution of avoiding infinity is to increment the probability ratio by one:
+%
+\begin{equation}
+  \label{eq:cpmi}
+  \operatorname{CPMI}(x, y) = \log\Big( 1 + \frac{P(x,y)}{P(x)P(y)} \Big)
+\end{equation}
+
+\subsection{Shifted PMI (\texttt{neg})}
+\label{sec:shifted-pmi}
+
+
+
+It has been experimentally shown that negative PMI values do not positively contribute to model performance and worth nullifying \cite{Turney:2010:FMV:1861751.1861756}.
+
+\emph{Positive PMI} (PosPMI) extended with an additional additional hyperparameter $k$ (\texttt{neg}) following \newcite{TACL570} is the third PMI variant used in this work:
+%
+\begin{equation}
+  \label{eq:ppmi}
+  \operatorname{PosPMI_k} = \max (0, \operatorname{PMI}(x, y) - \log k)
+\end{equation}
+%
+As $k$ increases, more values become 0 and, consequently, vectors become sparser. $k = 1$ is equivalent to vanilla positive PMI without shifting. When $k < 1$ vectors are denser.
+
+Finally, we can apply the same idea to CPMI:
+%
+\begin{equation}
+  \label{eq:pcpmi}
+  \operatorname{PCPMI_k} = \max (0, \operatorname{CPMI}(x, y) - \log 2k)
+\end{equation}
+
+\subsection{Frequency weighting (\texttt{freq})}
+\label{sec:frequency-weighting}
+
+Another issue with PMI is its bias towards rare events \cite{TACL570} one way of solving this issue is to weight PMI value by the co-occurrence frequency \cite{Evert05}:
+%
+\begin{equation}
+  \label{eq:lmi}
+  \operatorname{LMI}(x, y) = n\operatorname{PMI}(x, y)
+\end{equation}
+%
+where $n$ is the number of times $x$ was seen together with $y$. For clarity, we refer to $n$ weighted PMIs as \NPMI/, \NPPMI/ \NCPMI/ and \NPCPMI/. When frequency component is set to 1, it does not have an effect giving rise to explicit quantification labels: \PMI/, \PPMI/, \CPMI/ and \PCPMI/.
+
+In addition to $1$ and $n$ frequencies, we experiment with $\log n$ frequency.
+
+\subsection{Context distribution smoothing (\texttt{cds})}
+\label{sec:cont-distr-smooth}
+
+Context distribution smoothing (\texttt{cds}) is another parameter shown to influence performance of distributional models \cite{TACL570}. It smoothes the context distribution $P(x)$:
+%
+\begin{equation}
+  \label{eq:cds}
+  P_{\alpha}(x) = \frac{n(x)^{\alpha}}{\sum_{c}n(c)^{\alpha}}
+\end{equation}
+%
+We experiment with values of 1 (absence of smoothing) and 0.75.
+
+We also estimate probability of a context using the global context appearance in the corpus:
+%
+\begin{equation}
+  \label{eq:cds-nan}
+  P(x) = \frac{n(x)}{|C|}
+\end{equation}
+%
+where $|C|$ is the size of the used corpus. We refer to this case as \textit{global} context probability.
+
+\subsection{Vector dimensionality}
+\label{sec:vect-dimens}
+
+As context words we select 1000, 2000, 3000, 5000, 10000, 20000, 30000, 40000 and 50000 most frequent nouns, verbs, adjectives and adverbs. All context words are part of speech tagged, but we do not make difference between refined word types, for example, we do not distinguish between transitive and ditransitive verbs.
+
+\subsection{Similarity metric}
+\label{sec:similarity-metric}
+
+We test a widely used cosine based similarity, as well as correlation \cite{kiela-clark:2014:CVSC}.
+
+\subsection{Compositional operator}
+\label{sec:comp-oper}
+
+For tasks that involve composition, we test the following operators: addition
+and multiplication \cite{mitchell2010composition}; Kronecker \cite{Grefenstette:2011:ETV:2140490.2140497}; Relational \cite{Grefenstette:2011:ESC:2145432.2145580}; Copy object and Copy subject \cite{Kartsaklis12aunified}; Frobenious addition, Frobenious multiplication and Frobenious outer \cite{kartsadrqpl2014}.
 
 %\bibliographystyle{acl}
 % remove publisher, month etc from conf proceedings:
