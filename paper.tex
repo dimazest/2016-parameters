@@ -1,0 +1,115 @@
+\documentclass[11pt,letterpaper]{article}
+\usepackage{acl2015}
+\usepackage{times}
+
+\usepackage{url}
+\usepackage{latexsym}
+\usepackage{booktabs}
+\usepackage{multirow}
+\usepackage{graphicx}
+\usepackage{paralist}
+\usepackage{mathtools}
+\usepackage{dingbat}
+% \usepackage{subcaption}
+\usepackage{balance}
+\usepackage{gensymb}
+\usepackage{marginnote}
+\usepackage{adjustbox}
+
+\makeatletter
+\newcommand{\@BIBLABEL}{\@emptybiblabel}
+\newcommand{\@emptybiblabel}[1]{}
+\makeatother
+\usepackage{hyperref}
+
+\sloppy
+
+\usepackage{color}
+\newcommand{\todo}[1]{}
+\renewcommand{\todo}[1]{{\color{red} TODO: {#1}}}
+
+%\renewcommand{\baselinestretch}{0.95}
+
+%\setlength\titlebox{5cm}
+
+% You can expand the titlebox if you need extra space
+% to show all the authors. Please do not make the titlebox
+% smaller than 5cm (the original size); we will check this
+% in the camera-ready version and ask you to change it back.
+
+
+\title{\ldots}
+
+% \author{First Author \\
+%   Affiliation / Address line 1 \\
+%   Affiliation / Address line 2 \\
+%   Affiliation / Address line 3 \\
+%   {\tt email@domain} \\\And
+%   Second Author \\
+%   Affiliation / Address line 1 \\
+%   Affiliation / Address line 2 \\
+%   Affiliation / Address line 3 \\
+%   {\tt email@domain} \\}
+
+\date{}
+
+\newcommand{\BASEURL}{http://example.org}
+% \newcommand{\BASEURL}{https://bitbucket.org/dimazest/phd-buildout/raw/tip/notebooks/downloads/compdistmeaning}
+\newcommand{\dataurl}[1]{\href{\BASEURL/#1}{\nolinkurl{#1}}}
+
+\newcommand{\p}{\textsuperscript{\textasteriskcentered}}
+\newcommand{\pw}{\textsuperscript{\dag}}
+
+\newcommand{\pp}{\textsuperscript\dag}
+\newcommand{\ppp}{\textsuperscript\ddag}
+\newcommand{\np}{\phantom{\textsuperscript\textasteriskcentered}}
+
+\def\relevant/{Relevant@3}
+\def\topRR/{Top Reciprocal Rank}
+\def\RR/{Reciprocal Rank}
+
+
+\begin{document}
+\def\emnlp/{\textit{KS2013}}
+\def\PhraseRel/{PhraseRel}
+
+\def\PMI/{$1 \operatorname{PMI}$}
+\def\PPMI/{$1 \operatorname{PosPMI}$}
+\def\NPMI/{$n \operatorname{PMI}$}
+\def\NPPMI/{$n \operatorname{PosPMI}$}
+\def\NITTF/{$n \operatorname{ITTF}$}
+\def\logNPMI/{$\log n\operatorname{PMI}$}
+\def\logNPPMI/{$\log n\operatorname{PosPMI}$}
+\def\logNITTF/{$\log n\operatorname{ITTF}$}
+
+\maketitle
+\begin{abstract}
+\input{abstract.tex}
+\end{abstract}
+
+\section{Introduction}
+\label{sec:introduction}
+
+\newcite{TACL570} suggested to optimize PMI with a  set of parameters adopted from predictive models of \newcite{mikolov2013efficient}, most notably \emph{shifted PMI} abbreviated as \texttt{neg} and \emph{context distribution smoothing} referred to as \texttt{cds}. Their experiments and thus the parameter selection recommendations use highly dimensional vector spaces, namely word vectors have almost 200,000 dimensions. In general, recent work on lexical distributional semantics with the results close to the state of the art involve vectors with a considerable dimensionality of hundreds of thousands \cite{baroni-dinu-kruszewski:2014:P14-1,kiela-clark:2014:CVSC}.
+
+Contrary to the trend of employing highly dimensional vectors, older work on lexical distributional semantics and recent work on compositional distributional semantics employ vectors with much less dimensions, for example, 2000 \cite{Grefenstette:2011:ESC:2145432.2145580,kartsadrqpl2014,milajevs-EtAl:2014:EMNLP2014}, 3000 \cite{Dinu:2010:MDS:1870658.1870771,milajevs-purver:2014:CVSC} or 10000 \cite{polajnar-clark:2014:EACL,Baroni2010nouns}.
+
+Such a mismatch in vector dimensionality selection across lexical and compositional tasks rises a number of questions this paper aims to answer.
+\begin{itemize}
+\item To what extent does model performance depend on vector dimensionality?
+\item Do parameters influence performance of highly dimensional models the same way as lowly dimensional models? Are finding of \newcite{TACL570} directly transferred to lowly dimensional models?
+\item Is it possible to come up with the heuristics for model parameter selection? If so, what are they?
+\item Can the heuristics based on lexical tasks be transferred to compositional tasks?
+\end{itemize}
+
+To answer this study we perform a systematic study of distributional models with a rich set of parameters on two lexical datasets: SimLex-999 \cite{hill2014simlex} and MEN \cite{Bruni:2014:MDS:2655713.2655714} and three compositional datasets: KS14 \cite{kartsadrqpl2014}, GS11 \cite{Grefenstette:2011:ESC:2145432.2145580} and PhraseRel.
+
+
+%\bibliographystyle{acl}
+% remove publisher, month etc from conf proceedings:
+\bibliographystyle{acl-short}
+% \bibliographystyle{naaclhlt2016}
+% \balance
+\bibliography{references,dmilajevs_publications}
+
+\end{document}
