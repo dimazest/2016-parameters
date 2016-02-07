@@ -10,7 +10,7 @@
 \usepackage{paralist}
 \usepackage{mathtools}
 \usepackage{dingbat}
-% \usepackage{subcaption}
+\usepackage{subcaption}
 \usepackage{balance}
 \usepackage{gensymb}
 \usepackage{marginnote}
@@ -74,19 +74,19 @@
 \def\PhraseRel/{PhraseRel}
 
 \def\PMI/{$1 \operatorname{PMI}$}
-\def\PPMI/{$1 \operatorname{PosPMI}$}
+\def\SPMI/{$1 \operatorname{SPMI}$}
 \def\CPMI/{$1 \operatorname{CPMI}$}
-\def\PCPMI/{$1 \operatorname{PCPMI}$}
+\def\SCPMI/{$1 \operatorname{SCPMI}$}
 
 \def\NPMI/{$n \operatorname{PMI}$}
-\def\NPPMI/{$n \operatorname{PosPMI}$}
+\def\NSPMI/{$n \operatorname{SPMI}$}
 \def\NCPMI/{$n \operatorname{CPMI}$}
-\def\NPCPMI/{$n \operatorname{PCPMI}$}
+\def\NSCPMI/{$n \operatorname{SCPMI}$}
 
 \def\logNPMI/{$\log n\operatorname{PMI}$}
-\def\logNPPMI/{$\log n\operatorname{PosPMI}$}
+\def\logNSPMI/{$\log n\operatorname{SPMI}$}
 \def\logNCPMI/{$\log n \operatorname{CPMI}$}
-\def\logNPCPMI/{$\log n \operatorname{PCPMI}$}
+\def\logNSCPMI/{$\log n \operatorname{SCPMI}$}
 
 
 \maketitle
@@ -114,6 +114,8 @@ To answer these questions we perform a systematic study of distributional models
 \section{Parameters}
 \label{sec:parameters}
 
+\input{figures/parameters}
+
 \subsection{PMI variants (\texttt{discr})}
 \label{sec:pmi-variants}
 
@@ -136,24 +138,20 @@ An alternative solution of avoiding infinity is to increment the probability rat
 \subsection{Shifted PMI (\texttt{neg})}
 \label{sec:shifted-pmi}
 
-
-
-It has been experimentally shown that negative PMI values do not positively contribute to model performance and worth nullifying \cite{Turney:2010:FMV:1861751.1861756}.
-
-\emph{Positive PMI} (PosPMI) extended with an additional additional hyperparameter $k$ (\texttt{neg}) following \newcite{TACL570} is the third PMI variant used in this work:
+It has been experimentally shown that negative PMI values do not positively contribute to model performance and worth nullifying \cite{Turney:2010:FMV:1861751.1861756}. Positive PMI extended with an additional additional hyperparameter $k$ (\texttt{neg}) following \newcite{TACL570} is the third PMI variant (abbreviated as SPMI) used in this work:
 %
 \begin{equation}
   \label{eq:ppmi}
-  \operatorname{PosPMI_k} = \max (0, \operatorname{PMI}(x, y) - \log k)
+  \operatorname{SPMI_k} = \max (0, \operatorname{PMI}(x, y) - \log k)
 \end{equation}
 %
-As $k$ increases, more values become 0 and, consequently, vectors become sparser. $k = 1$ is equivalent to vanilla positive PMI without shifting. When $k < 1$ vectors are denser.
+As $k$ increases, more values become 0 and, consequently, vectors become sparser. Setting $k$ to 1 is equivalent to vanilla positive PMI without shifting. When $k < 1$ vectors are denser.
 
 Finally, we can apply the same idea to CPMI:
 %
 \begin{equation}
   \label{eq:pcpmi}
-  \operatorname{PCPMI_k} = \max (0, \operatorname{CPMI}(x, y) - \log 2k)
+  \operatorname{SCPMI_k} = \max (0, \operatorname{CPMI}(x, y) - \log 2k)
 \end{equation}
 
 \subsection{Frequency weighting (\texttt{freq})}
@@ -166,7 +164,7 @@ Another issue with PMI is its bias towards rare events \cite{TACL570} one way of
   \operatorname{LMI}(x, y) = n(x, y)\operatorname{PMI}(x, y)
 \end{equation}
 %
-where $n(x, y)$ is the number of times $x$ was seen together with $y$. For clarity, we refer to $n$ weighted PMIs as \NPMI/, \NPPMI/ \NCPMI/ and \NPCPMI/. When frequency component is set to 1, it does not have an effect giving rise to explicit quantification labels: \PMI/, \PPMI/, \CPMI/ and \PCPMI/.
+where $n(x, y)$ is the number of times $x$ was seen together with $y$. For clarity, we refer to $n$ weighted PMIs as \NPMI/, \NSPMI/ \NCPMI/ and \NSCPMI/. When frequency component is set to 1, it does not have an effect giving rise to explicit quantification labels: \PMI/, \SPMI/, \CPMI/ and \SCPMI/.
 
 In addition to $1$ and $n$ frequencies, we experiment with $\log n$ frequency.
 
@@ -207,32 +205,36 @@ We test a widely used cosine based similarity, as well as correlation \cite{kiel
 For tasks that involve composition, we test the following operators: addition
 and multiplication \cite{mitchell2010composition}; Kronecker \cite{Grefenstette:2011:ETV:2140490.2140497}; Relational \cite{Grefenstette:2011:ESC:2145432.2145580}; Copy object and Copy subject \cite{Kartsaklis12aunified}; Frobenious addition, Frobenious multiplication and Frobenious outer \cite{kartsadrqpl2014}.
 
-\begin{figure*}[th]
+Table~\ref{tab:parameters} list the parameters and their values used in this work.
+
+\section{Lexical experiments}
+\label{sec:lexical-experiments}
+
+\subsection{Shifted (positive) PMI performance}
+
+\begin{figure*}
   \centering
-  \begin{tabular}{llr}
-    \toprule
-    % \multicolumn{2}{c}{Item} \\
-    % \cmidrule(r){1-2}
-    Parameter & Values \\
-    \midrule
-    \texttt{discr} & PMI, CPMI, PosPMI, PCPMI \\
-    \texttt{neg} & 0.5, 0.7, 1, 1.4, 2, 5 \\
-    \texttt{freq} & $1$, $n$, $\log n$ \\
-    \texttt{cds} & \textit{nan}, 1, 0.75 \\
-    Dimensionality & 1K, 2K, 3K, 5K, 10K, 20K, 30K, 40K, 50K \\
-    Similarity & cosine, correlation \\
-    \multirow{2}{*}{Compositional operator}
-              & add, mult, kron, relational,
-                copy-object, copy-subject, \\
-              & frobenious-add, frobenious-mult,
-                frobenious-outer
-    \\
-    Corpus & concatenation of ukWac and Wackypedia \\
-    Window size & 5 \\
-    \bottomrule
-  \end{tabular}
-  \caption{\textbf{Parameters and their values.}}
+  \includegraphics[width=\textwidth]{supplement/figures/simlex-ppmi}
+  \caption{\textbf{Shifted PMI mean performance and variance.}}
+  \label{fig:ppmi-performance}
 \end{figure*}
+
+We start with exploring the performance of SPMI, in particular \SPMI/. Figure~\ref{fig:ppmi-performance} shows the mean performance and the variance of the SPMI models grouped by vector dimensionality and frequency on the SimLex-999 dataset.
+
+Average \SPMI/ performance increases for the dimensionality values in the range of 1K to 10K. After 10K dimensions, the average \SPMI/ performance degrades. \SPMI/ variance is the smallest for the 10K dimensional models and it grows as the dimension number increases afterwards. This suggests that there are particular parameter combinations that weaken or strengthen the results of the lowly and highly dimensional models.
+
+Interestingly, \logNSPMI/ mean performance increases and variance decreases as dimensionality increases showing that this weighting is not sensitive to the parameter selection for highly dimensional models.
+
+\paragraph{Parameter interaction}
+
+Figure~\ref{fig:simlex-ppmi-interaction} shows that 10K dimensional \SPMI/ is, indeed, the least sensitive to parameter selection. For models with dimensionality greater than 10K, context distribution smoothing should be used with $\alpha = 0.75$. For models with dimensionality lower than 10K, it is beneficial to use global context probabilities. Shifting also depends on the dimensionality, models with up to 3K dimensions should set $k = 0.5$, models with up to 20k dimensions should set $k = 1.4$ and models with a higher number of dimensions should set $k = 5$.
+
+\logNSPMI/ should be used with global context probabilities for models with vector dimensions up to 10K. For more dimensional spaces, smoothing should be applied with $\alpha = 0.75$. Shifting should be applied with $\alpha = 0.5$ for models with less than 10K dimensions and $\alpha = 1.4$ for models with more than 10K dimensions.
+
+
+\input{figures/simlex-ppmi-interaction}
+
+\input{figures/simlex-ppmi-best}
 
 %\bibliographystyle{acl}
 % remove publisher, month etc from conf proceedings:

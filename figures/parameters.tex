@@ -1,0 +1,32 @@
+\begin{table*}[th]
+  \centering
+  \begin{tabular}{llr}
+    \toprule
+    % \multicolumn{2}{c}{Item} \\
+    % \cmidrule(r){1-2}
+    Parameter & Values \\
+    \midrule
+    \texttt{discr} & PMI, CPMI, SPMI, SCPMI \\
+    \texttt{neg} & 0.2, 0.5, 0.7, 1, 1.4, 2, 5 \\
+    \texttt{freq} & $1$, $n$, $\log n$ \\
+    \texttt{cds} & \textit{nan}, 1, 0.75 \\
+    Dimensionality & 1K, 2K, 3K, 5K, 10K, 20K, 30K, 40K, 50K \\
+    Similarity & cosine, correlation \\
+    \multirow{2}{*}{Compositional operator}
+              & add, mult, kron, relational,
+                copy-object, copy-subject, \\
+              & frobenious-add, frobenious-mult,
+                frobenious-outer
+    \\
+    Corpus & concatenation of ukWac and Wackypedia \\
+    Window size & 5 \\
+    \bottomrule
+  \end{tabular}
+  \caption{\textbf{Parameters and their values.}}
+\label{tab:parameters}
+\end{table*}
+
+%%% Local Variables:
+%%% mode: latex
+%%% TeX-master: "paper"
+%%% End:
