@@ -203,7 +203,7 @@ We test a widely used cosine based similarity, as well as correlation \cite{kiel
 \label{sec:comp-oper}
 
 For tasks that involve composition, we test the following operators: \textbf{addition}
-and \textbf{multiplication} \cite{mitchell2010composition}; \textbf{Kronecker} \cite{Grefenstette:2011:ETV:2140490.2140497}; \textbf{Relational} \cite{Grefenstette:2011:ESC:2145432.2145580}; \textbf{Copy object} and \textbf{Copy subject} \cite{Kartsaklis12aunified}; \textbf{Frobenious addition}, \textbf{Frobenious multiplication} and \textbf{Frobenious outer} \cite{kartsadrqpl2014}.
+and \textbf{multiplication} \cite{mitchell2010composition}; \textbf{Kronecker} \cite{Grefenstette:2011:ETV:2140490.2140497}; \textbf{Relational} \cite{Grefenstette:2011:ESC:2145432.2145580}; \textbf{Copy object} and \textbf{Copy subject} \cite{Kartsaklis12aunified}; \textbf{Frobenius addition}, \textbf{Frobenius multiplication} and \textbf{Frobenius outer} \cite{kartsadrqpl2014}.
 
 Table~\ref{tab:parameters} lists the parameters and their values used in this work.
 
@@ -239,9 +239,14 @@ The proposed heuristics work well for \logNSPMI/, where performance variance is 
 
 Finally, to see whether the heuristics are applicable to other datasets, we contrast the selected models with the best scores on the MEN dataset (see Figure~\ref{fig:simlex-ppmi-best-men}). Again, \logNSPMI/ follows the best possible setup closely, especially for models with the dimension number greater than 10K. Surprisingly, the heuristics for \NSPMI/ are very effective on the MEN dataset, even though they are based on SimLex-999. Heuristics for \SPMI/ do not guarantee best possible results.
 
-In general, model performance depends on vector dimensionality. It is beneficial to experiment with dense and unsmoothed low dimensional spaces ($k < 1$, global context probability); and sparse and smooth high dimensional spaces ($k > 1$, $\alpha = 0.75$). However, these heuristics do not guarantee the best possible result for \SPMI/ and \NSPMI/ because of high variance of the corresponding scores. Based on this we suggest to use \logNSPMI/ with the dimensionality of at least 20K to ensure good performance on lexical tasks.
+In general, model performance depends on vector dimensionality (the best setup with 50K dimensions is better than the best setup with 1K dimensions by 0.03 on SimLex-999). It is beneficial to experiment with dense and unsmoothed low dimensional spaces ($k < 1$, global context probability); and sparse and smooth high dimensional spaces ($k > 1$, $\alpha = 0.75$). However, these heuristics do not guarantee the best possible result for \SPMI/ and \NSPMI/ because of high variance of the corresponding scores. Based on this we suggest to use \logNSPMI/ with the dimensionality of at least 20K to ensure good performance on lexical tasks.
 
 \input{figures/simlex-ppmi-best}
+
+\section{Compositional experiments}
+\label{sec:compositional-experiments}
+
+\input{figures/emnlp13-ppmi-performance}
 
 %\bibliographystyle{acl}
 % remove publisher, month etc from conf proceedings:
