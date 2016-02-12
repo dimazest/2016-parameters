@@ -97,6 +97,14 @@
 \section{Introduction}
 \label{sec:introduction}
 
+Vector space models of language were inspired by the idea of \newcite{harris1954distributional} and \newcite{firth1957lingtheory} that meanings of words can be deduced from their co-occurrence with other words in natural text. If a word co-occurs with a context word more often than can be expected, this context word is indicative of the word's meaning, while the opposite indicates disjointness in meaning.
+\newcite{Dagan:1993:CWS:981574.981596} were among the first to apply this idea computationally and to represent word meaning by an ordered range of values of
+\emph{mutual information}\footnote{Also known as pairwise or pointwise mutual information and commonly abbreviated as PMI.} \cite{church1990word}.
+Each value expresses the ratio between the observed and the expected co-occurrence, and, therefore, measures the association of the target word with a reference word. A word could thus be expressed as a vector with a set of contextual terms as its features, and as their weights a measure of association. This idea forms the basis of distributional semantics and has become mainstream in information retrieval and natural language processing tasks.
+
+Over the last decades, various information-theoretic alternatives and refinements to mutual information have been introduced to capture lexical semantics. The most notable are \emph{positive PMI} (PosPMI, \newcite{BullinariaLevy07}) and \emph{local mutual information} (LMI, \newcite{evert2008corpora}).
+These measures differ from PMI in their treatment of frequencies below expectation, and in the weight assigned to observed frequencies, embodied in additional multiplication factors.
+
 \newcite{TACL570} suggested to optimize PMI with a  set of parameters adopted from predictive models of \newcite{mikolov2013efficient}, most notably \emph{shifted PMI} abbreviated as \texttt{neg} and \emph{context distribution smoothing} referred to as \texttt{cds}. Their experiments and thus the parameter selection recommendations use highly dimensional vector spaces with word vector  dimensionality of almost \textbf{200K}. As such, recent work on lexical distributional semantics with the results close to the state of the art involve vectors with a considerable dimensionality of hundreds of thousands \cite{baroni-dinu-kruszewski:2014:P14-1,kiela-clark:2014:CVSC}.
 
 Contrary to the trend of employing highly dimensional vectors, other work on lexical and compositional distributional semantics employ vectors with much less dimensions, for example, \textbf{2K} \cite{Grefenstette:2011:ESC:2145432.2145580,kartsadrqpl2014,milajevs-EtAl:2014:EMNLP2014}, \textbf{3K} \cite{Dinu:2010:MDS:1870658.1870771,milajevs-purver:2014:CVSC} or \textbf{10K} \cite{polajnar-clark:2014:EACL,Baroni2010nouns}.
