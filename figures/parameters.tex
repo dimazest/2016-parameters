@@ -1,25 +1,25 @@
-\begin{table*}[h]
+\begin{table}
   \centering
-  \begin{tabular}{llrrr}
+  \footnotesize
+  \begin{tabular}{llc}
     \toprule
-    \multirow{2}{*}{Parameter} & \multirow{2}{*}{Values} &
-    \multicolumn{2}{c}{$R^2$} \\
-    \cmidrule(r){3-4}
-    & & SimLex-999 & MEN \\
+    Parameter & Values & $R^2$ \\
     \midrule
-    \texttt{discr} & PMI, CPMI, SPMI, SCPMI \\
-    \texttt{neg} & 0.2, 0.5, 0.7, 1, 1.4, 2, 5 \\
-    \texttt{freq} & $1$, $n$, $\log n$ \\
-    \texttt{cds} & \textit{nan}, 1, 0.75 \\
-    Dimensionality & 1K, 2K, 3K, 5K, 10K, 20K, 30K, 40K, 50K \\
-    Similarity & cosine, correlation \\
-    Corpus & concatenation of ukWac and Wackypedia \\
-    Window size & 5 \\
+    \texttt{freq} & $1$, $n$, $\log n$                         & 0.36 \\
+    \texttt{neg} & 0.2, 0.5, 0.7, 1, 1.4, 2, 5                 & 0.19 \\
+    \multirow{2}{*}{Dimensionality} & 1K, 2K, 3K, 5K,          & \multirow{2}{*}{0.17} \\
+                                    & 10K, 20K, 30K, 40K, 50K                          \\
+    \texttt{cds} & \textit{nan}, 1, 0.75                       & 0.12 \\
+    \texttt{discr} & PMI, CPMI, SPMI, SCPMI                    & 0.03 \\
+    Similarity & Cosine, correlation                           & 0.02 \\
+    \multirow{2}{*}{Corpus} & Concatenation of                 & \multirow{2}{*}{---}  \\
+                            & ukWac and Wackypedia                                     \\
+    Window size & 5                                            & ---  \\
     \bottomrule
   \end{tabular}
-  \caption{\textbf{Parameters and their values.}}
+  \caption{\textbf{Parameters, values and their ablation on the SimLex-999 dataset.}}
 \label{tab:parameters}
-\end{table*}
+\end{table}
 
 %%% Local Variables:
 %%% mode: latex

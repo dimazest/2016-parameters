@@ -97,13 +97,13 @@
 \section{Introduction}
 \label{sec:introduction}
 
-Vector space models of language were inspired by the idea of \newcite{harris1954distributional} and \newcite{firth1957lingtheory} that meanings of words can be deduced from their co-occurrence with other words in natural text. If a word co-occurs with a context word more often than can be expected, this context word is indicative of the word's meaning, while the opposite indicates disjointness in meaning.
-\newcite{Dagan:1993:CWS:981574.981596} were among the first to apply this idea computationally and to represent word meaning by an ordered range of values of
-\emph{mutual information}\footnote{Also known as pairwise or pointwise mutual information and commonly abbreviated as PMI.} \cite{church1990word}.
-Each value expresses the ratio between the observed and the expected co-occurrence, and, therefore, measures the association of the target word with a reference word. A word could thus be expressed as a vector with a set of contextual terms as its features, and as their weights a measure of association. This idea forms the basis of distributional semantics and has become mainstream in information retrieval and natural language processing tasks.
+% Vector space models of language were inspired by the idea of \newcite{harris1954distributional} and \newcite{firth1957lingtheory} that meanings of words can be deduced from their co-occurrence with other words in natural text. If a word co-occurs with a context word more often than can be expected, this context word is indicative of the word's meaning, while the opposite indicates disjointness in meaning.
+% \newcite{Dagan:1993:CWS:981574.981596} were among the first to apply this idea computationally and to represent word meaning by an ordered range of values of
+% \emph{mutual information}\footnote{Also known as pairwise or pointwise mutual information and commonly abbreviated as PMI.} \cite{church1990word}.
+% Each value expresses the ratio between the observed and the expected co-occurrence, and, therefore, measures the association of the target word with a reference word. A word could thus be expressed as a vector with a set of contextual terms as its features, and as their weights a measure of association. This idea forms the basis of distributional semantics and has become mainstream in information retrieval and natural language processing tasks.
 
-Over the last decades, various information-theoretic alternatives and refinements to mutual information have been introduced to capture lexical semantics. The most notable are \emph{positive PMI} (PosPMI, \newcite{BullinariaLevy07}) and \emph{local mutual information} (LMI, \newcite{evert2008corpora}).
-These measures differ from PMI in their treatment of frequencies below expectation, and in the weight assigned to observed frequencies, embodied in additional multiplication factors.
+% Over the last decades, various information-theoretic alternatives and refinements to mutual information have been introduced to capture lexical semantics. The most notable are \emph{positive PMI} (PosPMI, \newcite{BullinariaLevy07}) and \emph{local mutual information} (LMI, \newcite{evert2008corpora}).
+% These measures differ from PMI in their treatment of frequencies below expectation, and in the weight assigned to observed frequencies, embodied in additional multiplication factors.
 
 \newcite{TACL570} suggested to optimize PMI with a  set of parameters adopted from predictive models of \newcite{mikolov2013efficient}, most notably \emph{shifted PMI} abbreviated as \texttt{neg} and \emph{context distribution smoothing} referred to as \texttt{cds}. Their experiments and thus the parameter selection recommendations use highly dimensional vector spaces with word vector  dimensionality of almost \textbf{200K}. As such, recent work on lexical distributional semantics with the results close to the state of the art involve vectors with a considerable dimensionality of hundreds of thousands \cite{baroni-dinu-kruszewski:2014:P14-1,kiela-clark:2014:CVSC}.
 
@@ -117,8 +117,6 @@ Such a mismatch in vector dimensionality selection across lexical and compositio
 \end{itemize}
 
 To answer these questions we perform a systematic study of distributional models with a rich set of parameters on two lexical datasets: SimLex-999 \cite{hill2014simlex} and MEN \cite{Bruni:2014:MDS:2655713.2655714}.
-
-\input{figures/parameters}
 
 \section{Parameters}
 \label{sec:parameters}
@@ -208,26 +206,30 @@ As context words we select 1K, 2K, 3K, 5K, 10K, 20K, 30K, 40K and 50K most frequ
 
 We test a widely used cosine based similarity, as well as correlation \cite{kiela-clark:2014:CVSC}.
 
-Table~\ref{tab:parameters} lists the parameters and their values used in this work.
-
 \section{Experiments}
 \label{sec:lexical-experiments}
 
-Figure~\ref{fig:performance-mean-var} shows the mean performance and the variance of the models grouped by vector dimensionality and the frequency component on the SimLex-999 dataset.
+\input{figures/parameters}
 
-PMI models have the highest score variance, which peaks for the 10K dimensional models, however \NPMI/'s score variance has a different pattern: it almost does not depend on the vector dimensionality.
+Table~\ref{tab:parameters} lists parameters used in this work, their values and the proportion of score variance explained by the parameter and it's two-way interaction corresponding to the reduction in adjusted $R^2$ (0.61 if all parameters and their combinations are taken into account) if this parameter is left out using the analysis of variance, where the model score is a dependant variable and the model parameters are independent variables, refer to \newcite{lapesa2014large} for more details.
 
-CPMI models exhibit the low variance for the models with dimensionality less than 5K, but the average \NCPMI/ performance decreases as the dimensionality increases due to the increase in score variance.
+% ----------
 
-Shifted PMI has the lowest variance with the 10K dimensional models. \logNSPMI/ variance stabilizes after 10K dimensions, but \SPMI/ variance increases similarly to \CPMI/.
+% Figure~\ref{fig:performance-mean-var} shows the mean performance and the variance of the models grouped by vector dimensionality and the frequency component on the SimLex-999 dataset.
 
-Finally, SCPMI behaves very similarly to SPMI but with higher variance.
+% PMI models have the highest score variance, which peaks for the 10K dimensional models, however \NPMI/'s score variance has a different pattern: it almost does not depend on the vector dimensionality.
+
+% CPMI models exhibit the low variance for the models with dimensionality less than 5K, but the average \NCPMI/ performance decreases as the dimensionality increases due to the increase in score variance.
+
+% Shifted PMI has the lowest variance with the 10K dimensional models. \logNSPMI/ variance stabilizes after 10K dimensions, but \SPMI/ variance increases similarly to \CPMI/.
+
+% Finally, SCPMI behaves very similarly to SPMI but with higher variance.
 
 
-High variance suggests that there are particular parameter combinations that weaken or strengthen the results of the lowly and highly dimensional models.
+% High variance suggests that there are particular parameter combinations that weaken or strengthen the results of the lowly and highly dimensional models.
 
 
-\subsection{Parameter interaction and heuristic derivation}
+\subsection{Heuristic derivation}
 
 \input{figures/interaction-cds}
 
