@@ -1,10 +1,11 @@
-\begin{table*}[th]
+\begin{table*}[h]
   \centering
-  \begin{tabular}{llr}
+  \begin{tabular}{llrrr}
     \toprule
-    % \multicolumn{2}{c}{Item} \\
-    % \cmidrule(r){1-2}
-    Parameter & Values \\
+    \multirow{2}{*}{Parameter} & \multirow{2}{*}{Values} &
+    \multicolumn{2}{c}{$R^2$} \\
+    \cmidrule(r){3-4}
+    & & SimLex-999 & MEN \\
     \midrule
     \texttt{discr} & PMI, CPMI, SPMI, SCPMI \\
     \texttt{neg} & 0.2, 0.5, 0.7, 1, 1.4, 2, 5 \\
@@ -12,12 +13,6 @@
     \texttt{cds} & \textit{nan}, 1, 0.75 \\
     Dimensionality & 1K, 2K, 3K, 5K, 10K, 20K, 30K, 40K, 50K \\
     Similarity & cosine, correlation \\
-    \multirow{2}{*}{Compositional operator}
-              & add, mult, kron, relational,
-                copy-object, copy-subject, \\
-              & frobenious-add, frobenious-mult,
-                frobenious-outer
-    \\
     Corpus & concatenation of ukWac and Wackypedia \\
     Window size & 5 \\
     \bottomrule

@@ -20,7 +20,7 @@
 \newcommand{\@BIBLABEL}{\@emptybiblabel}
 \newcommand{\@emptybiblabel}[1]{}
 \makeatother
-\usepackage{hyperref}
+% \usepackage{hyperref}
 
 \sloppy
 
@@ -116,12 +116,12 @@ Such a mismatch in vector dimensionality selection across lexical and compositio
 \item Is it possible to come up with the heuristics for model parameter selection? If so, what are they?
 \end{itemize}
 
-To answer these questions we perform a systematic study of distributional models with a rich set of parameters on two lexical datasets: SimLex-999 \cite{hill2014simlex} and MEN \cite{Bruni:2014:MDS:2655713.2655714}; and three compositional datasets: KS14 \cite{kartsadrqpl2014}, GS11 \cite{Grefenstette:2011:ESC:2145432.2145580} and PhraseRel.
+To answer these questions we perform a systematic study of distributional models with a rich set of parameters on two lexical datasets: SimLex-999 \cite{hill2014simlex} and MEN \cite{Bruni:2014:MDS:2655713.2655714}.
+
+\input{figures/parameters}
 
 \section{Parameters}
 \label{sec:parameters}
-
-\input{figures/parameters}
 
 \subsection{PMI variants (\texttt{discr})}
 \label{sec:pmi-variants}
@@ -161,6 +161,8 @@ Finally, we can apply the same idea to CPMI:
   \operatorname{SCPMI_k} = \max (0, \operatorname{CPMI}(x, y) - \log 2k)
 \end{equation}
 
+\input{figures/performance-mean-var}
+
 \subsection{Frequency weighting (\texttt{freq})}
 \label{sec:frequency-weighting}
 
@@ -196,13 +198,6 @@ We also estimate probability of a context using the global context appearance in
 %
 where $|C|$ is the size of the used corpus. We refer to this case as \emph{global context probability}.
 
-\begin{figure*}[ht]
-  \centering
-  \includegraphics[width=\textwidth]{supplement/figures/simlex-ppmi}
-  \caption{\textbf{Shifted PMI mean performance and variance.}}
-  \label{fig:ppmi-performance}
-\end{figure*}
-
 \subsection{Vector dimensionality}
 \label{sec:vect-dimens}
 
@@ -213,65 +208,77 @@ As context words we select 1K, 2K, 3K, 5K, 10K, 20K, 30K, 40K and 50K most frequ
 
 We test a widely used cosine based similarity, as well as correlation \cite{kiela-clark:2014:CVSC}.
 
-\subsection{Compositional operator}
-\label{sec:comp-oper}
-
-For tasks that involve composition, we test the following operators: \textbf{addition}
-and \textbf{multiplication} \cite{mitchell2010composition}; \textbf{Kronecker} \cite{Grefenstette:2011:ETV:2140490.2140497}; \textbf{Relational} \cite{Grefenstette:2011:ESC:2145432.2145580}; \textbf{Copy object} and \textbf{Copy subject} \cite{Kartsaklis12aunified}; \textbf{Frobenius addition}, \textbf{Frobenius multiplication} and \textbf{Frobenius outer} \cite{kartsadrqpl2014}.
-
 Table~\ref{tab:parameters} lists the parameters and their values used in this work.
 
-\section{Lexical experiments}
+\section{Experiments}
 \label{sec:lexical-experiments}
 
-Figure~\ref{fig:ppmi-performance} shows the mean performance and the variance of the SPMI models grouped by vector dimensionality and frequency on the SimLex-999 dataset.
+Figure~\ref{fig:performance-mean-var} shows the mean performance and the variance of the models grouped by vector dimensionality and the frequency component on the SimLex-999 dataset.
 
-We start with exploring the performance of \SPMI/. Average \SPMI/ performance increases for the dimensionality values in the range of 1K to 10K. After 10K dimensions, the average \SPMI/ performance degrades. \SPMI/ score variance is the smallest for the 10K dimensional models and it grows as the dimension number increases afterwards. This suggests that there are particular parameter combinations that weaken or strengthen the results of the lowly and highly dimensional models.
+PMI models have the highest score variance, which peaks for the 10K dimensional models, however \NPMI/'s score variance has a different pattern: it almost does not depend on the vector dimensionality.
 
-Interestingly, \logNSPMI/ mean performance increases and variance decreases as dimensionality increases showing that this weighting is not sensitive to the parameter selection for highly dimensional models.
+CPMI models exhibit the low variance for the models with dimensionality less than 5K, but the average \NCPMI/ performance decreases as the dimensionality increases due to the increase in score variance.
 
-\paragraph{Parameter interaction}
+Shifted PMI has the lowest variance with the 10K dimensional models. \logNSPMI/ variance stabilizes after 10K dimensions, but \SPMI/ variance increases similarly to \CPMI/.
 
-\input{figures/simlex-ppmi-interaction}
-
-Figure~\ref{fig:simlex-ppmi-interaction} shows dimensionality-\texttt{cds} and dimensionality-\texttt{neg} parameter interactions. 10K dimensional \SPMI/ is, indeed, the least sensitive to parameter selection. For models with dimensionality greater than 10K, context distribution smoothing should be used with $\alpha = 0.75$. For models with dimensionality lower than 10K, it is beneficial to use global context probabilities. Shifting also depends on the dimensionality, models with up to 3K dimensions should set $k = 0.5$, models with up to 30K dimensions should set $k = 1.4$ and models with a higher number of dimensions should set $k = 2$.
-
-\logNSPMI/ should be used with global context probabilities for models with vector dimensions up to 10K. For more dimensional spaces, smoothing should be applied with $\alpha = 0.75$. Shifting should be applied with $\alpha = 0.5$ for models with less than 10K dimensions and $\alpha = 1.4$ for models with more than 10K dimensions.
-
-\NSPMI/ gives good results with local context probabilities ($\alpha = 1$), models with less than 20K dimensions should be used with $k = 1$, otherwise $k = 1.4$ should be preferred.
-
-We use correlation similarity metric for \SPMI/ and \NSPMI/ based models, cosine similarity is used for \logNSPMI/.
-
-The proposed heuristics work well for \logNSPMI/, where performance variance is low, the performance of models selected using the heuristics is not lower than 0.01 point of the best configuration. For \SPMI/ and \NSPMI/ this difference is much higher, refer to Figure~\ref{fig:simlex-ppmi-best-simlex} for more details.
-
-Finally, to see whether the heuristics are applicable to other datasets, we contrast the selected models with the best scores on the MEN dataset (see Figure~\ref{fig:simlex-ppmi-best-men}). Again, \logNSPMI/ follows the best possible setup closely, especially for models with the dimension number greater than 10K. Surprisingly, the heuristics for \NSPMI/ are very effective on the MEN dataset, even though they are based on SimLex-999. Heuristics for \SPMI/ do not guarantee best possible results.
-
-In general, model performance depends on vector dimensionality (the best setup with 50K dimensions is better than the best setup with 1K dimensions by 0.03 on SimLex-999). It is beneficial to experiment with dense and unsmoothed low dimensional spaces ($k < 1$, global context probability); and sparse and smooth high dimensional spaces ($k > 1$, $\alpha = 0.75$). However, these heuristics do not guarantee the best possible result for \SPMI/ and \NSPMI/ because of high variance of the corresponding scores. Based on this we suggest to use \logNSPMI/ with the dimensionality of at least 20K to ensure good performance on lexical tasks.
-
-\input{figures/simlex-ppmi-best}
-
-\section{Compositional experiments}
-\label{sec:compositional-experiments}
-
-\input{figures/emnlp13-ppmi-performance}
-
-In compositional experiments, the main goal is to study compositional operators rather than special weighting schemes, therefore we will see the weighting scheme as another hyperparameter that is being optimized and study compositional operators in isolation.
-
-Figure~\ref{fig:emnlp13-ppmi-performance} shows SPMI's average performance and evaluation score variance on the KS14 dataset.
-
-Addition has the highest average performance and a relatively low variance. Multiplication, shows lowest average performance, but the result variance is much higher than addition. Kronecker exhibits behavior similar to multiplication.
-
-\subsection{Addition}
-\label{sec:addition}
+Finally, SCPMI behaves very similarly to SPMI but with higher variance.
 
 
+High variance suggests that there are particular parameter combinations that weaken or strengthen the results of the lowly and highly dimensional models.
 
+
+\subsection{Parameter interaction and heuristic derivation}
+
+\input{figures/interaction-cds}
+
+Figures~\ref{fig:interaction-cds}~and~~\ref{fig:interaction-neg} show dimensionality-\texttt{cds} and dimensionality-\texttt{neg} parameter interactions.
+
+\paragraph{PMI and CPMI}
+
+PMI achieves the highest performance with global context probabilities. CPMI should be used with local context probabilities and \CPMI/ should apply context distribution smoothing with $\alpha = 0.75$.
+
+\paragraph{SPMI}
+
+10K dimensional \SPMI/ is, indeed, the least sensitive to parameter selection. For models with dimensionality greater than 20K, context distribution smoothing should be used with $\alpha = 0.75$. For models with dimensionality lower than 20K, it is beneficial to use global context probabilities. Shifting also depends on the dimensionality, models with up to 20K dimensions should set $k = 0.7$ and models with a higher number of dimensions should set $k = 5$. Note, however, that there might be a finer grained $k$ tuning which we avoid in order to avoid overfitting.
+
+\logNSPMI/ should be used with global context probabilities for models with vector dimensions up to 20K. For more dimensional spaces, smoothing should be applied with $\alpha = 0.75$, which is similar to \SPMI/. Shifting should be applied with $\alpha = 1.4$ for models with less than 20K dimensions and $\alpha = 5$ for models with more than 20K dimensions. In contrast to \SPMI/, which might require change of $k$ as the dimensionality increases, $\alpha = 1.4$ is a much robust choice for \logNSPMI/.
+
+\NSPMI/ gives good results with local context probabilities ($\alpha = 1$). Models with less than 20K dimensions should be used with $k = 1.4$, otherwise $k = 5$ should be preferred.
+
+\paragraph{SCPMI}
+
+With \SCPMI/ and vectors with dimensionality less than 20K global context probability should be used and shifting should be set to $k = 0.7$. Otherwise, local context probability should be used with $\alpha = 0.75$ and $k = 2$.
+
+\NSCPMI/ with dimensions less than 20K global context probability should be used and $k = 1.4$. Otherwise local context probability without smoothing and $k = 5$ is suggested.
+
+\logNSCPMI/ with models with less than 20K dimensions gives the highest average results with global context probabilities and $k = 0.7$. Otherwise, local context probabilities without smoothing should be preferred with $k = 1.4$.
+
+% We use correlation similarity metric for \SPMI/ and \NSPMI/ based models, cosine similarity is used for \logNSPMI/.
+
+\subsection{Heurisitc evaluation}
+\label{sec:heurisitc-evaluation}
+
+We evaluate the models selected using the heuristics described above against the best possible selection for a given dimensionality choice on the SimLex-999 dataset (refer to Figure~\ref{fig:simlex-ppmi-best-simlex}).
+
+Heuristics for \logNPMI/ and \logNCPMI/ pick the best possible models.
+
+The proposed heuristics work well for \logNSPMI/, where performance variance is low, the performance of models selected using the heuristics is not lower than 0.01 point of the best configuration. For \SPMI/ and \NSPMI/ this difference is much higher.
+
+Heuristics for \logNCPMI/ and \CPMI/ follow the best selection, but with a wider gap than the PPMI models. In general $n$ weighted models do not perform as good as others.
+
+Finally, to see whether the heuristics are applicable to other datasets, we contrast the selected models with the best scores on the MEN dataset (see Figure~\ref{fig:simlex-ppmi-best-men}). Again, PMI and CPMI follow the best possible setup and there is a little gap between the chosen models and the best possible selection.
+
+In general, model performance depends on vector dimensionality (the best setup with 50K dimensions is better than the best setup with 1K dimensions by 0.03 on SimLex-999). It is beneficial to experiment with dense and unsmoothed low dimensional spaces ($k < 1$, global context probability); and sparse and smooth high dimensional spaces ($k > 1$, $\alpha = 0.75$). However, these heuristics do not guarantee the best possible result for unweighted and $n$-weighted models because of high variance of the corresponding scores. Based on this we suggest to use \logNSPMI/ or \logNSCPMI/ with the dimensionality of at least 20K to ensure good performance on lexical tasks.
+
+\input{figures/interaction-neg}
+
+\input{figures/best}
 
 
 %\bibliographystyle{acl}
 % remove publisher, month etc from conf proceedings:
-\bibliographystyle{acl-short}
-% \bibliographystyle{naaclhlt2016}
+% \bibliographystyle{acl-short}
+\bibliographystyle{acl2016}
 \balance
 \bibliography{references,dmilajevs_publications}
 
