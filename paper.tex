@@ -121,6 +121,8 @@ To answer these questions we perform a systematic study of distributional models
 \section{Parameters}
 \label{sec:parameters}
 
+\input{figures/interaction-cds}
+
 \subsection{PMI variants (\texttt{discr})}
 \label{sec:pmi-variants}
 
@@ -140,6 +142,8 @@ An alternative solution of avoiding infinity is to increment the probability rat
   \operatorname{CPMI}(x, y) = \log\Big( 1 + \frac{P(x,y)}{P(x)P(y)} \Big)
 \end{equation}
 
+\input{figures/parameters}
+
 \subsection{Shifted PMI (\texttt{neg})}
 \label{sec:shifted-pmi}
 
@@ -150,16 +154,12 @@ It has been experimentally shown that negative PMI values do not positively cont
   \operatorname{SPMI_k} = \max (0, \operatorname{PMI}(x, y) - \log k)
 \end{equation}
 %
-As $k$ increases, more values become 0 and, consequently, vectors become sparser. Setting $k$ to 1 is equivalent to vanilla positive PMI without shifting. When $k < 1$ vectors are denser.
-
-Finally, we can apply the same idea to CPMI:
+We can apply the same idea to CPMI:
 %
 \begin{equation}
   \label{eq:pcpmi}
   \operatorname{SCPMI_k} = \max (0, \operatorname{CPMI}(x, y) - \log 2k)
 \end{equation}
-
-\input{figures/performance-mean-var}
 
 \subsection{Frequency weighting (\texttt{freq})}
 \label{sec:frequency-weighting}
@@ -174,6 +174,8 @@ Another issue with PMI is its bias towards rare events \cite{TACL570} one way of
 where $n(x, y)$ is the number of times $x$ was seen together with $y$. For clarity, we refer to $n$ weighted PMIs as \NPMI/, \NSPMI/ \NCPMI/ and \NSCPMI/. When frequency component is set to 1, it does not have an effect giving rise to explicit quantification labels: \PMI/, \SPMI/, \CPMI/ and \SCPMI/.
 
 In addition to $1$ and $n$ frequencies, we experiment with $\log n$ frequency.
+
+\input{figures/interaction-neg}
 
 \subsection{Context distribution smoothing (\texttt{cds})}
 \label{sec:cont-distr-smooth}
@@ -209,31 +211,7 @@ We test a widely used cosine based similarity, as well as correlation \cite{kiel
 \section{Experiments}
 \label{sec:lexical-experiments}
 
-\input{figures/parameters}
-
-Table~\ref{tab:parameters} lists parameters used in this work, their values and the proportion of score variance explained by the parameter and it's two-way interaction corresponding to the reduction in adjusted $R^2$ (0.61 if all parameters and their combinations are taken into account) if this parameter is left out using the analysis of variance, where the model score is a dependant variable and the model parameters are independent variables, refer to \newcite{lapesa2014large} for more details.
-
-% ----------
-
-% Figure~\ref{fig:performance-mean-var} shows the mean performance and the variance of the models grouped by vector dimensionality and the frequency component on the SimLex-999 dataset.
-
-% PMI models have the highest score variance, which peaks for the 10K dimensional models, however \NPMI/'s score variance has a different pattern: it almost does not depend on the vector dimensionality.
-
-% CPMI models exhibit the low variance for the models with dimensionality less than 5K, but the average \NCPMI/ performance decreases as the dimensionality increases due to the increase in score variance.
-
-% Shifted PMI has the lowest variance with the 10K dimensional models. \logNSPMI/ variance stabilizes after 10K dimensions, but \SPMI/ variance increases similarly to \CPMI/.
-
-% Finally, SCPMI behaves very similarly to SPMI but with higher variance.
-
-
-% High variance suggests that there are particular parameter combinations that weaken or strengthen the results of the lowly and highly dimensional models.
-
-
-\subsection{Heuristic derivation}
-
-\input{figures/interaction-cds}
-
-Figures~\ref{fig:interaction-cds}~and~~\ref{fig:interaction-neg} show dimensionality-\texttt{cds} and dimensionality-\texttt{neg} parameter interactions.
+Table~\ref{tab:parameters} lists parameters used in this work and their values. We will derive the parameter selection heuristics by greedily selecting parameters (\texttt{cds}, \texttt{neg} and similarity measure) that lead to the highest average performance for each frequency, discriminativeness and context combination. Figures~\ref{fig:interaction-cds} and \ref{fig:interaction-neg} show such interaction of \texttt{cds} and \texttt{neg} with other parameters, we don not report similarity behavior due to the limited space.
 
 \paragraph{PMI and CPMI}
 
@@ -255,10 +233,10 @@ With \SCPMI/ and vectors with dimensionality less than 20K global context probab
 
 \logNSCPMI/ with models with less than 20K dimensions gives the highest average results with global context probabilities and $k = 0.7$. Otherwise, local context probabilities without smoothing should be preferred with $k = 1.4$.
 
-% We use correlation similarity metric for \SPMI/ and \NSPMI/ based models, cosine similarity is used for \logNSPMI/.
-
 \subsection{Heurisitc evaluation}
 \label{sec:heurisitc-evaluation}
+
+\input{figures/best}
 
 We evaluate the models selected using the heuristics described above against the best possible selection for a given dimensionality choice on the SimLex-999 dataset (refer to Figure~\ref{fig:simlex-ppmi-best-simlex}).
 
@@ -270,12 +248,12 @@ Heuristics for \logNCPMI/ and \CPMI/ follow the best selection, but with a wider
 
 Finally, to see whether the heuristics are applicable to other datasets, we contrast the selected models with the best scores on the MEN dataset (see Figure~\ref{fig:simlex-ppmi-best-men}). Again, PMI and CPMI follow the best possible setup and there is a little gap between the chosen models and the best possible selection.
 
-In general, model performance depends on vector dimensionality (the best setup with 50K dimensions is better than the best setup with 1K dimensions by 0.03 on SimLex-999). It is beneficial to experiment with dense and unsmoothed low dimensional spaces ($k < 1$, global context probability); and sparse and smooth high dimensional spaces ($k > 1$, $\alpha = 0.75$). However, these heuristics do not guarantee the best possible result for unweighted and $n$-weighted models because of high variance of the corresponding scores. Based on this we suggest to use \logNSPMI/ or \logNSCPMI/ with the dimensionality of at least 20K to ensure good performance on lexical tasks.
+\section{Conclusion}
+\label{sec:conclusion}
 
-\input{figures/interaction-neg}
+This paper presents a systematic study of co-occurrence quantification focusing of the selection of parameters presented in \newcite{TACL570}. We replicate their recommendation for highly dimensional vector spaces, and show that with appropriate parameter selection it is possible to achieve comparable performance with lowly dimensional spaces. As an outcome of such an analysis we propose a set of model selection heuristics that maximize performance.
 
-\input{figures/best}
-
+In general, model performance depends on vector dimensionality (the best setup with 50K dimensions is better than the best setup with 1K dimensions by 0.03 on SimLex-999). It is beneficial to experiment with dense and unsmoothed lowly dimensional spaces ($k < 1$, global context probability); and sparse and smooth highly dimensional spaces ($k > 1$, $\alpha = 0.75$). However, these heuristics do not guarantee the best possible result for unweighted and $n$-weighted models because of the high variance of the corresponding scores. Based on this we suggest to use \logNSPMI/ or \logNSCPMI/ with the dimensionality of at least 20K to ensure good performance on lexical tasks.
 
 %\bibliographystyle{acl}
 % remove publisher, month etc from conf proceedings:

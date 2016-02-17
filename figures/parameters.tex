@@ -1,23 +1,23 @@
 \begin{table}
   \centering
-  \footnotesize
+  % \footnotesize
   \begin{tabular}{llc}
     \toprule
-    Parameter & Values & $R^2$ \\
+    Parameter & Values \\
     \midrule
-    \texttt{freq} & $1$, $n$, $\log n$                         & 0.36 \\
-    \texttt{neg} & 0.2, 0.5, 0.7, 1, 1.4, 2, 5                 & 0.19 \\
-    \multirow{2}{*}{Dimensionality} & 1K, 2K, 3K, 5K,          & \multirow{2}{*}{0.17} \\
-                                    & 10K, 20K, 30K, 40K, 50K                          \\
-    \texttt{cds} & \textit{nan}, 1, 0.75                       & 0.12 \\
-    \texttt{discr} & PMI, CPMI, SPMI, SCPMI                    & 0.03 \\
-    Similarity & Cosine, correlation                           & 0.02 \\
-    \multirow{2}{*}{Corpus} & Concatenation of                 & \multirow{2}{*}{---}  \\
-                            & ukWac and Wackypedia                                     \\
-    Window size & 5                                            & ---  \\
+    \multirow{2}{*}{Dimensionality} & 1K, 2K, 3K, 5K \\
+                                    & 10K, 20K, 30K, 40K, 50K \\
+    \texttt{discr} & PMI, CPMI, SPMI, SCPMI \\
+    \texttt{freq} & $1$, $n$, $\log n$ \\
+    \texttt{neg} & 0.2, 0.5, 0.7, 1, 1.4, 2, 5 \\
+    \texttt{cds} & \textit{global}, 1, 0.75 \\
+    Similarity & Cosine, correlation \\
+    Window size & 5                                \\
+    \multirow{2}{*}{Corpus} & Concatenation of \\
+                            & ukWac and Wackypedia \\
     \bottomrule
   \end{tabular}
-  \caption{\textbf{Parameters, values and their ablation on the SimLex-999 dataset.}}
+  \caption{\textbf{Model parameters and their values.}}
 \label{tab:parameters}
 \end{table}
 
