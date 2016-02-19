@@ -64,11 +64,6 @@
 \newcommand{\ppp}{\textsuperscript\ddag}
 \newcommand{\np}{\phantom{\textsuperscript\textasteriskcentered}}
 
-\def\relevant/{Relevant@3}
-\def\topRR/{Top Reciprocal Rank}
-\def\RR/{Reciprocal Rank}
-
-
 \begin{document}
 \def\emnlp/{\textit{KS2013}}
 \def\PhraseRel/{PhraseRel}
@@ -88,7 +83,6 @@
 \def\logNCPMI/{$\log n \operatorname{CPMI}$}
 \def\logNSCPMI/{$\log n \operatorname{SCPMI}$}
 
-
 \maketitle
 \begin{abstract}
 \input{abstract.tex}
@@ -97,15 +91,7 @@
 \section{Introduction}
 \label{sec:introduction}
 
-% Vector space models of language were inspired by the idea of \newcite{harris1954distributional} and \newcite{firth1957lingtheory} that meanings of words can be deduced from their co-occurrence with other words in natural text. If a word co-occurs with a context word more often than can be expected, this context word is indicative of the word's meaning, while the opposite indicates disjointness in meaning.
-% \newcite{Dagan:1993:CWS:981574.981596} were among the first to apply this idea computationally and to represent word meaning by an ordered range of values of
-% \emph{mutual information}\footnote{Also known as pairwise or pointwise mutual information and commonly abbreviated as PMI.} \cite{church1990word}.
-% Each value expresses the ratio between the observed and the expected co-occurrence, and, therefore, measures the association of the target word with a reference word. A word could thus be expressed as a vector with a set of contextual terms as its features, and as their weights a measure of association. This idea forms the basis of distributional semantics and has become mainstream in information retrieval and natural language processing tasks.
-
-% Over the last decades, various information-theoretic alternatives and refinements to mutual information have been introduced to capture lexical semantics. The most notable are \emph{positive PMI} (PosPMI, \newcite{BullinariaLevy07}) and \emph{local mutual information} (LMI, \newcite{evert2008corpora}).
-% These measures differ from PMI in their treatment of frequencies below expectation, and in the weight assigned to observed frequencies, embodied in additional multiplication factors.
-
-\newcite{TACL570} suggested to optimize PMI with a  set of parameters adopted from predictive models of \newcite{mikolov2013efficient}, most notably \emph{shifted PMI} abbreviated as \texttt{neg} and \emph{context distribution smoothing} referred to as \texttt{cds}. Their experiments and thus the parameter selection recommendations use highly dimensional vector spaces with word vector  dimensionality of almost \textbf{200K}. As such, recent work on lexical distributional semantics with the results close to the state of the art involve vectors with a considerable dimensionality of hundreds of thousands \cite{baroni-dinu-kruszewski:2014:P14-1,kiela-clark:2014:CVSC}.
+\newcite{TACL570} suggested to optimize PMI with a  set of parameters adopted from predictive models of \newcite{mikolov2013efficient}, most notably shifting and context distribution smoothing. Their experiments and thus the parameter selection recommendations use highly dimensional vector spaces with word vector  dimensionality of almost \textbf{200K}. As such, recent work on lexical distributional semantics with the results close to the state of the art involve vectors with a considerable dimensionality of hundreds of thousands \cite{baroni-dinu-kruszewski:2014:P14-1,kiela-clark:2014:CVSC}.
 
 Contrary to the trend of employing highly dimensional vectors, other work on lexical and compositional distributional semantics employ vectors with much less dimensions, for example, \textbf{2K} \cite{Grefenstette:2011:ESC:2145432.2145580,kartsadrqpl2014,milajevs-EtAl:2014:EMNLP2014}, \textbf{3K} \cite{Dinu:2010:MDS:1870658.1870771,milajevs-purver:2014:CVSC} or \textbf{10K} \cite{polajnar-clark:2014:EACL,Baroni2010nouns}.
 
@@ -133,7 +119,7 @@ Co-occurrence weightings schemes based on \emph{Point-wise mutual information} (
   \operatorname{PMI}(x, y) = \log\frac{P(x,y)}{P(x)P(y)}
 \end{equation}
 
-PMI is not directly applicable to the co-occurrence matrix because non-observed co-occurrences lead to infinite PMI values which in turn make it impossible to compute similarity. A straightforward ``fix'' to this problem is to replace all infinities with zeroes. Such a replacement preserve sparsity of the input co-occurrence matrix. Later in the paper, we use PMI to refer to a weighting with this fix.
+PMI is not directly applicable to the co-occurrence matrix because non-observed co-occurrences lead to infinite PMI values which in turn make it impossible to compute similarity. A straightforward ``fix'' to this problem is to replace all infinities with zeroes. Later in the paper, we use PMI to refer to a weighting with this fix.
 
 An alternative solution of avoiding infinity is to increment the probability ratio by one:
 %
@@ -219,9 +205,9 @@ PMI achieves the highest performance with global context probabilities. CPMI sho
 
 \paragraph{SPMI}
 
-10K dimensional \SPMI/ is, indeed, the least sensitive to parameter selection. For models with dimensionality greater than 20K, context distribution smoothing should be used with $\alpha = 0.75$. For models with dimensionality lower than 20K, it is beneficial to use global context probabilities. Shifting also depends on the dimensionality, models with up to 20K dimensions should set $k = 0.7$ and models with a higher number of dimensions should set $k = 5$. Note, however, that there might be a finer grained $k$ tuning which we avoid in order to avoid overfitting.
+10K dimensional \SPMI/ is the least sensitive to parameter selection. For models with dimensionality greater than 20K, context distribution smoothing should be used with $\alpha = 0.75$. For models with dimensionality lower than 20K, it is beneficial to use global context probabilities. Shifting also depends on the dimensionality, models with up to 20K dimensions should set $k = 0.7$ and models with a higher number of dimensions should set $k = 5$. Note, however, that there might be a finer grained $k$ selection criteria, which we do not report in order to avoid overfitting.
 
-\logNSPMI/ should be used with global context probabilities for models with vector dimensions up to 20K. For more dimensional spaces, smoothing should be applied with $\alpha = 0.75$, which is similar to \SPMI/. Shifting should be applied with $\alpha = 1.4$ for models with less than 20K dimensions and $\alpha = 5$ for models with more than 20K dimensions. In contrast to \SPMI/, which might require change of $k$ as the dimensionality increases, $\alpha = 1.4$ is a much robust choice for \logNSPMI/.
+\logNSPMI/ should be used with global context probabilities for models with vector dimensions up to 20K. For more dimensional spaces, smoothing should be applied with $\alpha = 0.75$, which is similar to \SPMI/. Shifting should be applied with $k = 0.5$ for models with less than 20K dimensions and $k = 1.4$ for models with more than 20K dimensions. In contrast to \SPMI/, which might require change of $k$ as the dimensionality increases, $k = 1.4$ is a much robust choice for \logNSPMI/.
 
 \NSPMI/ gives good results with local context probabilities ($\alpha = 1$). Models with less than 20K dimensions should be used with $k = 1.4$, otherwise $k = 5$ should be preferred.
 
@@ -229,7 +215,7 @@ PMI achieves the highest performance with global context probabilities. CPMI sho
 
 With \SCPMI/ and vectors with dimensionality less than 20K global context probability should be used and shifting should be set to $k = 0.7$. Otherwise, local context probability should be used with $\alpha = 0.75$ and $k = 2$.
 
-\NSCPMI/ with dimensions less than 20K global context probability should be used and $k = 1.4$. Otherwise local context probability without smoothing and $k = 5$ is suggested.
+\NSCPMI/ with dimensions less than 20K should using with global context probability and $k = 1.4$. Otherwise, local context probability without smoothing and $k = 5$ is suggested.
 
 \logNSCPMI/ with models with less than 20K dimensions gives the highest average results with global context probabilities and $k = 0.7$. Otherwise, local context probabilities without smoothing should be preferred with $k = 1.4$.
 
@@ -244,9 +230,9 @@ Heuristics for \logNPMI/ and \logNCPMI/ pick the best possible models.
 
 The proposed heuristics work well for \logNSPMI/, where performance variance is low, the performance of models selected using the heuristics is not lower than 0.01 point of the best configuration. For \SPMI/ and \NSPMI/ this difference is much higher.
 
-Heuristics for \logNCPMI/ and \CPMI/ follow the best selection, but with a wider gap than the PPMI models. In general $n$ weighted models do not perform as good as others.
+Heuristics for \logNCPMI/ and \CPMI/ follow the best selection, but with a wider gap than the SPMI models. In general $n$ weighted models do not perform as good as others.
 
-Finally, to see whether the heuristics are applicable to other datasets, we contrast the selected models with the best scores on the MEN dataset (see Figure~\ref{fig:simlex-ppmi-best-men}). Again, PMI and CPMI follow the best possible setup and there is a little gap between the chosen models and the best possible selection.
+Finally, to see whether the heuristics are applicable to other datasets, we contrast the selected models with the best scores on the MEN dataset (see Figure~\ref{fig:simlex-ppmi-best-men}). Again, PMI and CPMI follow the best possible setup and there is a little gap between the chosen models and the best possible selection for SPMI and SCPMI.
 
 \section{Conclusion}
 \label{sec:conclusion}
