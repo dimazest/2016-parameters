@@ -38,7 +38,7 @@
 % in the camera-ready version and ask you to change it back.
 
 
-\title{\ldots}
+\title{Robust co-occurrence quantification for lexical distributional semantics experiments}
 
 % \author{First Author \\
 %   Affiliation / Address line 1 \\
@@ -91,7 +91,7 @@
 \section{Introduction}
 \label{sec:introduction}
 
-\newcite{TACL570} suggested to optimize PMI with a  set of parameters adopted from predictive models of \newcite{mikolov2013efficient}, most notably shifting and context distribution smoothing. Their experiments and thus the parameter selection recommendations use highly dimensional vector spaces with word vector  dimensionality of almost \textbf{200K}. As such, recent work on lexical distributional semantics with the results close to the state of the art involve vectors with a considerable dimensionality of hundreds of thousands \cite{baroni-dinu-kruszewski:2014:P14-1,kiela-clark:2014:CVSC}.
+\newcite{TACL570} suggested to optimize PMI with a  set of parameters adopted from predictive models of \newcite{mikolov2013efficient}, namely shifting and context distribution smoothing. Their experiments and thus the parameter selection recommendations use highly dimensional vector spaces with word vector  dimensionality of almost \textbf{200K}. As such, recent work on lexical distributional semantics with the results close to the state of the art involve vectors with a considerable dimensionality of hundreds of thousands \cite{baroni-dinu-kruszewski:2014:P14-1,kiela-clark:2014:CVSC,lapesa2014large}.
 
 Contrary to the trend of employing highly dimensional vectors, other work on lexical and compositional distributional semantics employ vectors with much less dimensions, for example, \textbf{2K} \cite{Grefenstette:2011:ESC:2145432.2145580,kartsadrqpl2014,milajevs-EtAl:2014:EMNLP2014}, \textbf{3K} \cite{Dinu:2010:MDS:1870658.1870771,milajevs-purver:2014:CVSC} or \textbf{10K} \cite{polajnar-clark:2014:EACL,Baroni2010nouns}.
 
@@ -207,6 +207,8 @@ PMI achieves the highest performance with global context probabilities. CPMI sho
 
 10K dimensional \SPMI/ is the least sensitive to parameter selection. For models with dimensionality greater than 20K, context distribution smoothing should be used with $\alpha = 0.75$. For models with dimensionality lower than 20K, it is beneficial to use global context probabilities. Shifting also depends on the dimensionality, models with up to 20K dimensions should set $k = 0.7$ and models with a higher number of dimensions should set $k = 5$. Note, however, that there might be a finer grained $k$ selection criteria, which we do not report in order to avoid overfitting.
 
+\input{figures/best}
+
 \logNSPMI/ should be used with global context probabilities for models with vector dimensions up to 20K. For more dimensional spaces, smoothing should be applied with $\alpha = 0.75$, which is similar to \SPMI/. Shifting should be applied with $k = 0.5$ for models with less than 20K dimensions and $k = 1.4$ for models with more than 20K dimensions. In contrast to \SPMI/, which might require change of $k$ as the dimensionality increases, $k = 1.4$ is a much robust choice for \logNSPMI/.
 
 \NSPMI/ gives good results with local context probabilities ($\alpha = 1$). Models with less than 20K dimensions should be used with $k = 1.4$, otherwise $k = 5$ should be preferred.
@@ -221,8 +223,6 @@ With \SCPMI/ and vectors with dimensionality less than 20K global context probab
 
 \subsection{Heurisitc evaluation}
 \label{sec:heurisitc-evaluation}
-
-\input{figures/best}
 
 We evaluate the models selected using the heuristics described above against the best possible selection for a given dimensionality choice on the SimLex-999 dataset (refer to Figure~\ref{fig:simlex-ppmi-best-simlex}).
 
