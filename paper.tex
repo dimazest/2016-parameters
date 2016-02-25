@@ -102,7 +102,7 @@ Contrary to the trend of employing highly dimensional vectors, other work on lex
 Such a mismatch in vector dimensionality selection across lexical and compositional tasks rises a number of questions this paper aims to answer.
 \begin{itemize}
 \item To what extent does model performance depend on vector dimensionality?
-\item Do parameters influence performance of highly dimensional models the same way as lowly dimensional models? Can the findings of \newcite{TACL570} be directly applied to lowly dimensional models?
+\item Do parameters influence performance of highly dimensional models the same way as low dimensional models? Can the findings of \newcite{TACL570} be directly applied to low dimensional models?
 \item Is it possible to come up with the heuristics for model parameter selection? If so, what are they?
 \end{itemize}
 
@@ -241,9 +241,9 @@ Finally, to see whether the heuristics are applicable to other datasets, we cont
 \section{Conclusion}
 \label{sec:conclusion}
 
-This paper presents a systematic study of co-occurrence quantification focusing of the selection of parameters presented in \newcite{TACL570}. We replicate their recommendation for highly dimensional vector spaces, and show that with appropriate parameter selection it is possible to achieve comparable performance with lowly dimensional spaces. As an outcome of such an analysis we propose a set of model selection heuristics that maximize performance.
+This paper presents a systematic study of co-occurrence quantification focusing of the selection of parameters presented in \newcite{TACL570}. We replicate their recommendation for highly dimensional vector spaces, and show that with appropriate parameter selection it is possible to achieve comparable performance with low dimensional spaces. As an outcome of such an analysis we propose a set of model selection heuristics that maximize performance.
 
-In general, model performance depends on vector dimensionality (the best setup with 50K dimensions is better than the best setup with 1K dimensions by 0.03 on SimLex-999). It is beneficial to experiment with dense and unsmoothed lowly dimensional spaces ($k < 1$, global context probability); and sparse and smooth highly dimensional spaces ($k > 1$, $\alpha = 0.75$). However, these heuristics do not guarantee the best possible result for unweighted and $n$-weighted models because of the high variance of the corresponding scores. Based on this we suggest to use \logNSPMI/ or \logNSCPMI/ with the dimensionality of at least 20K to ensure good performance on lexical tasks.
+In general, model performance depends on vector dimensionality (the best setup with 50K dimensions is better than the best setup with 1K dimensions by 0.03 on SimLex-999). It is beneficial to experiment with dense and unsmoothed low dimensional spaces ($k < 1$, global context probability); and sparse and smooth highly dimensional spaces ($k > 1$, $\alpha = 0.75$). However, these heuristics do not guarantee the best possible result for unweighted and $n$-weighted models because of the high variance of the corresponding scores. Based on this we suggest to use \logNSPMI/ or \logNSCPMI/ with the dimensionality of at least 20K to ensure good performance on lexical tasks.
 
 %\bibliographystyle{acl}
 % remove publisher, month etc from conf proceedings:
