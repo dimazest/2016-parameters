@@ -205,7 +205,7 @@ PMI should be used with global context probabilities. \NCPMI/ and \logNCPMI/ sho
 
 10K dimensional \SPMI/ is the least sensitive to parameter selection. For models with dimensionality greater than 20K, context distribution smoothing should be used with $\alpha = 0.75$. For models with dimensionality lower than 20K, it is beneficial to use global context probabilities. Shifting also depends on the dimensionality: models with up to 20K dimensions should set $k = 0.7$ and models with a higher number of dimensions should set $k = 5$. Note, however, that there might be a finer grained $k$ selection criteria, which we do not report in order to avoid overfitting.
 
-\input{figures/global-best}
+\input{figures/best}
 
 \logNSPMI/ should be used with global context probabilities for models with vector dimensions up to 20K. For more dimensional spaces, smoothing should be applied with $\alpha = 0.75$, which is similar to \SPMI/. Shifting should be applied with $k = 0.5$ for models with less than 20K dimensions and $k = 1.4$ for models with more than 20K dimensions. In contrast to \SPMI/, which might require change of $k$ as the dimensionality increases, $k = 1.4$ is a much robust choice for \logNSPMI/.
 
@@ -222,7 +222,7 @@ For \logNSCPMI/, models with less than 20K dimensions should be used with global
 \paragraph{Evaluation of heuristics}
 \label{sec:heuristic-evaluation}
 
-We evaluate these heuristics by comparing the performance they give on SimLex-999 against that obtained using the best possible parameter selections (determined via an exhaustive search for each dimensionality choice); and the best models reported by \cite{TACL570} (see Figure~\ref{fig:global-best-simlex}).
+We evaluate these heuristics by comparing the performance they give on SimLex-999 against that obtained using the best possible parameter selections (determined via an exhaustive search for each dimensionality choice); and the best models reported by \cite{TACL570} (see Figure~\ref{fig:best-simlex}).
 
 For \logNPMI/ and \logNCPMI/, our heuristics pick the best possible models. For \logNSPMI/, where performance variance is low, the heuristics do well, giving performance no more than 0.01 points below the best configuration. For \SPMI/ and \NSPMI/ this difference is much higher.
 
@@ -230,7 +230,7 @@ Heuristics for \logNSCPMI/and \SCPMI/ follow the best selection, but with a wide
 
 $\log n$ weighting should be used with PMI, CPMI and SCPMI. High-dimensional SPMI models show the same behaviour, but if vector dimensionality is less than 10K, no weighting should be applied. SPMI and SCPMI should be preferred over CPMI and PMI.
 
-Finally, to see whether the heuristics transfer robustly, we repeat this comparison on the MEN dataset (see Figure~\ref{fig:global-best-men}). Again, PMI and CPMI follow the best possible setup and there is a little gap between the chosen models and the best possible selection for SPMI and SCPMI.
+Finally, to see whether the heuristics transfer robustly, we repeat this comparison on the MEN dataset (see Figure~\ref{fig:best-men}). Again, PMI and CPMI follow the best possible setup and there is a little gap between the chosen models and the best possible selection for SPMI and SCPMI.
 
 % \textbf{MP: is it worth including a line for the *worst* possible parameter selection too? Or for the average; or for the Levy/Goldberg "standard" parameters? That way the reader can see how much benefit the heuristics give. }
 
