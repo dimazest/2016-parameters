@@ -94,11 +94,12 @@
 \section{Introduction}
 \label{sec:introduction}
 
-\newcite{TACL570} propose optimisations for co-occrrence-based distributional models, using parameters adopted from predictive models \cite{mikolov2013efficient}: \emph{shifting} and \emph{context distribution smoothing}. Their experiments and thus their parameter  recommendations use high-dimensional vector spaces with word vector dimensionality of almost \textbf{200K}, and many recent state-of-the-art results in lexical distributional semantics have been obtained using vectors with similar dimensionality  \cite{baroni-dinu-kruszewski:2014:P14-1,kiela-clark:2014:CVSC,lapesa2014large}.
+\newcite{TACL570} propose optimisations for co-occrrence-based distributional models, using parameters adopted from predictive models \cite{mikolov2013efficient}: \emph{shifting} and \emph{context distribution smoothing}. Their experiments and thus their parameter  recommendations use high-dimensional vector spaces with word vector dimensionality of almost \textbf{200K}, and many recent state-of-the-art results in lexical distributional semantics have been obtained using vectors with similarly high dimensionality  \cite{baroni-dinu-kruszewski:2014:P14-1,kiela-clark:2014:CVSC,lapesa2014large}.
 
-In contrast, much work on \emph{compositional} distributional semantics employs vectors with much fewer dimensions: e.g.~\textbf{2K} \cite{Grefenstette:2011:ESC:2145432.2145580,kartsadrqpl2014,milajevs-EtAl:2014:EMNLP2014}, \textbf{3K} \cite{Dinu:2010:MDS:1870658.1870771,milajevs-purver:2014:CVSC} or \textbf{10K} \cite{polajnar-clark:2014:EACL,Baroni2010nouns}. These models  assign tensors to functional words: intransitive verbs and adjectives have  tensors of rank 2,  transitive verbs  rank 3, prepositions rank 7. Tensors are highly dimensional objects, for $V$ a vector space with dimension $k$,  a tensor $V \otimes V \cdots \otimes V$ of rank $n$ over it has dimension  $n^k$. In these models, if one takes $n= \textbf{30k}$, then one will end up with   spaces with intractable dimensions  $\textbf{30k}^2, \textbf{30k}^3$ and $\textbf{30k}^7$. 
+In contrast, much work on \emph{compositional} distributional semantics employs vectors with much fewer dimensions: e.g.~\textbf{2K} \cite{Grefenstette:2011:ESC:2145432.2145580,kartsadrqpl2014,milajevs-EtAl:2014:EMNLP2014}, \textbf{3K} \cite{Dinu:2010:MDS:1870658.1870771,milajevs-purver:2014:CVSC} or \textbf{10K} \cite{polajnar-clark:2014:EACL,Baroni2010nouns}. These models  assign tensors to functional words; for a vector space $V$ with dimension $k$,  a tensor $V \otimes V \cdots \otimes V$ of rank $n$ has dimension  $n^k$. As intransitive verbs and adjectives have  tensors of rank 2,  transitive verbs  rank 3, and prepositions rank 7, 
+if one takes $n= \textbf{30k}$ one will end up with   spaces with intractable dimensions  $\textbf{30}^\textbf{2} \textbf{k}$, $\textbf{30}^\textbf{3} \textbf{k}$ and $\textbf{30}^\textbf{7} \textbf{k}$. 
 
-Such a mismatch in vector dimensionality between lexical and compositional tasks gives rise to a number of questions:
+This mismatch in vector dimensionality between lexical and compositional tasks gives rise to a number of questions:
 \begin{compactitem}
 \item To what extent does model performance depend on vector dimensionality?
 \item Do parameters influence performance of high-dimensional and low-dimensional models in the same way? Can the findings of \newcite{TACL570} be directly applied to low-dimensional models?
@@ -115,16 +116,16 @@ To answer these, we perform a systematic study of distributional models with a r
 \subsection{PMI variants (\texttt{discr})}
 \label{sec:pmi-variants}
 
-Co-occurrence weighting schemes based on \emph{Point-wise mutual information} (PMI, Equation~\ref{eq:pmi}) have been successfully applied in distributional semantics (see e.g.~\newcite{J90-1003}, \newcite{Turney:2010:FMV:1861751.1861756}, \newcite{NIPS2014_5477}).
+Most co-occurrence weighting schemes in distributional semantics are based on \emph{point-wise mutual information} (PMI, Equation~\ref{eq:pmi}) (see e.g.~\newcite{J90-1003}, \newcite{Turney:2010:FMV:1861751.1861756}, \newcite{NIPS2014_5477}).
 %
 \begin{equation}
   \label{eq:pmi}
   \operatorname{PMI}(x, y) = \log\frac{P(x,y)}{P(x)P(y)}
 \end{equation}
 
-PMI is not directly applicable to the co-occurrence matrix because non-observed co-occurrences lead to infinite PMI values which in turn make it impossible to compute similarity. A straightforward ``fix'' to this problem is to replace all infinities with zeroes. Later in the paper, we use PMI to refer to a weighting with this fix.
+PMI in its raw form is problematic: non-observed co-occurrences lead to infinite PMI values, making it impossible to compute similarity. A common ``fix'' to this problem is to replace all infinities with zeroes, and we use PMI hereafter to refer to a weighting with this fix.
 
-An alternative solution of avoiding infinity is to increment the probability ratio by one, we refer to it as \textit{compressed} PMI:
+An alternative solution is to increment the probability ratio by 1; we refer to this as \textit{compressed PMI} (CPMI):
 %
 \begin{equation}
   \label{eq:cpmi}
@@ -136,7 +137,7 @@ An alternative solution of avoiding infinity is to increment the probability rat
 \subsection{Shifted PMI (\texttt{neg})}
 \label{sec:shifted-pmi}
 
-Many approaches use only \emph{positive} PMI values, as  negative PMI values may not positively contribute to model performance \cite{Turney:2010:FMV:1861751.1861756}. This can be generalised as an additional parameter $k$ (\texttt{neg}) following \newcite{TACL570}, giving our third PMI variant (abbreviated as SPMI):
+Many approaches use only \emph{positive} PMI values, as  negative PMI values may not positively contribute to model performance \cite{Turney:2010:FMV:1861751.1861756}. This can be generalised as an additional cutoff parameter $k$ (\texttt{neg}) following \newcite{TACL570}, giving our third PMI variant (abbreviated as SPMI):
 %
 \begin{equation}
   \label{eq:ppmi}
@@ -153,57 +154,56 @@ We can apply the same idea to CPMI:
 \subsection{Frequency weighting (\texttt{freq})}
 \label{sec:frequency-weighting}
 
-Another issue with PMI is its bias towards rare events \cite{TACL570} one way of solving this issue is to weight PMI value by the co-occurrence frequency \cite{Evert05}:
+Another issue with PMI is its bias towards rare events \cite{TACL570}; one way of solving this issue is to weight the value by the co-occurrence frequency \cite{Evert05}:
 %
 \begin{equation}
   \label{eq:lmi}
   \operatorname{LMI}(x, y) = n(x, y)\operatorname{PMI}(x, y)
 \end{equation}
 %
-where $n(x, y)$ is the number of times $x$ was seen together with $y$. For clarity, we refer to $n$ weighted PMIs as \NPMI/, \NSPMI/ \NCPMI/ and \NSCPMI/. When frequency component is set to 1, it does not have an effect giving rise to explicit quantification labels: \PMI/, \SPMI/, \CPMI/ and \SCPMI/.
+where $n(x, y)$ is the number of times $x$ was seen together with $y$. For clarity, we refer to $n$-weighted PMIs as \NPMI/, \NSPMI/, \NCPMI/ and \NSCPMI/. When this weighting component is set to 1, it has no effect; we can  explicitly label this \PMI/, \SPMI/, \CPMI/ and \SCPMI/.
 
-In addition to $1$ and $n$ frequencies, we experiment with $\log n$ frequency.
+In addition to $1$ and $n$ weightings, we experiment with a $\log n$ weighting.
+% \textbf{MP: cite ref for this?}
 
 \input{figures/interaction-neg}
 
 \subsection{Context distribution smoothing (\texttt{cds})}
 \label{sec:cont-distr-smooth}
 
-Context distribution smoothing (\texttt{cds}) is another parameter shown to influence performance of distributional models \cite{TACL570}. It smoothes the context distribution $P(x)$:
+\newcite{TACL570} show that performance is affected by smoothing the context distribution $P(x)$:
 %
 \begin{equation}
   \label{eq:cds}
   P_{\alpha}(x) = \frac{n(x)^{\alpha}}{\sum_{c}n(c)^{\alpha}}
 \end{equation}
 %
-We experiment with values of 1 (absence of smoothing) and 0.75 and sometimes refer to such context probability estimation as \emph{local context probability}.
-
-We also estimate probability of a context using the global context appearance in the corpus:
+We experiment with $\alpha$ values of 1 (no smoothing) and 0.75. We refer to this estimation method as \emph{local context probability}; we can also estimate a \emph{global context probability} based on global context appearance:
 %
 \begin{equation}
   \label{eq:cds-nan}
   P(x) = \frac{n(x)}{|C|}
 \end{equation}
 %
-where $|C|$ is the size of the used corpus. We refer to this case as \emph{global context probability}.
+where $|C|$ is the size of the used corpus.
 
 \subsection{Vector dimensionality}
 \label{sec:vect-dimens}
 
-As context words we select 1K, 2K, 3K, 5K, 10K, 20K, 30K, 40K and 50K most frequent lemmatised nouns, verbs, adjectives and adverbs. All context words are part of speech tagged, but we do not make difference between refined word types, for example, we do not distinguish between transitive and ditransitive verbs.
+As context words we select the 1K, 2K, 3K, 5K, 10K, 20K, 30K, 40K and 50K most frequent lemmatised nouns, verbs, adjectives and adverbs. All context words are part of speech tagged, but we do not distinguish between refined word types (e.g. transitive vs. ditransitive versions of verbs).
 
 \section{Experiments}
 \label{sec:lexical-experiments}
 
-Table~\ref{tab:parameters} lists parameters used in this work and their values. We will derive the parameter selection heuristics by greedily selecting parameters (\texttt{cds} and \texttt{neg}) that lead to the highest average performance for each frequency, discriminativeness and context combination. Figures~\ref{fig:interaction-cds} and \ref{fig:interaction-neg} show such interaction of \texttt{cds} and \texttt{neg} with other parameters. We also vary the similarity measure (cosine and correlation  \cite{kiela-clark:2014:CVSC}), but do not report their behaviour in details due to the limited space.
+Table~\ref{tab:parameters} lists parameters used in this work and their values. As the source corpus we use the concatenation of Wackypedia and ukWaC \cite{Baroni2009} using a symmetric window of 5 words (following \newcite{milajevs-EtAl:2014:EMNLP2014}); our evaluation metric is the correlation with human judgements as standardly used with SimLex \cite{hill2014simlex}. We derive our parameter selection heuristics by greedily selecting parameters (\texttt{cds} and \texttt{neg}) that lead to the highest average performance for each combination of frequency weighting, PMI variant and dimensionality. Figures~\ref{fig:interaction-cds} and \ref{fig:interaction-neg} show the interaction of \texttt{cds} and \texttt{neg} with other parameters. We also vary the similarity measure (cosine and correlation  \cite{kiela-clark:2014:CVSC}), but do not report detailed results due to limited space.
 
 \paragraph{PMI and CPMI}
 
-PMI achieves the highest performance with global context probabilities. CPMI should be used with local context probabilities and \CPMI/ should apply context distribution smoothing with $\alpha = 0.75$.
+PMI should be used with global context probabilities. \NCPMI/ and \logNCPMI/ should be used with local context probabilities and \CPMI/ should apply context distribution smoothing with $\alpha = 0.75$.
 
 \paragraph{SPMI}
 
-10K dimensional \SPMI/ is the least sensitive to parameter selection. For models with dimensionality greater than 20K, context distribution smoothing should be used with $\alpha = 0.75$. For models with dimensionality lower than 20K, it is beneficial to use global context probabilities. Shifting also depends on the dimensionality, models with up to 20K dimensions should set $k = 0.7$ and models with a higher number of dimensions should set $k = 5$. Note, however, that there might be a finer grained $k$ selection criteria, which we do not report in order to avoid overfitting.
+10K dimensional \SPMI/ is the least sensitive to parameter selection. For models with dimensionality greater than 20K, context distribution smoothing should be used with $\alpha = 0.75$. For models with dimensionality lower than 20K, it is beneficial to use global context probabilities. Shifting also depends on the dimensionality: models with up to 20K dimensions should set $k = 0.7$ and models with a higher number of dimensions should set $k = 5$. Note, however, that there might be a finer grained $k$ selection criteria, which we do not report in order to avoid overfitting.
 
 \input{figures/best}
 
@@ -213,31 +213,33 @@ PMI achieves the highest performance with global context probabilities. CPMI sho
 
 \paragraph{SCPMI}
 
-With \SCPMI/ and vectors with dimensionality less than 20K global context probability should be used and shifting should be set to $k = 0.7$. Otherwise, local context probability should be used with $\alpha = 0.75$ and $k = 2$.
+With \SCPMI/ and vector dimensionality less than 20K, global context probability should be used and shifting should be set to $k = 0.7$. Otherwise, local context probability should be used with $\alpha = 0.75$ and $k = 2$.
 
-\NSCPMI/ with dimensions less than 20K should using with global context probability and $k = 1.4$. Otherwise, local context probability without smoothing and $k = 5$ is suggested.
+With \NSCPMI/ and dimensions less than 20K, global context probability should be used with $k = 1.4$. Otherwise, local context probability without smoothing and $k = 5$ is suggested.
 
-\logNSCPMI/ with models with less than 20K dimensions gives the highest average results with global context probabilities and $k = 0.7$. Otherwise, local context probabilities without smoothing should be preferred with $k = 1.4$.
+For \logNSCPMI/, models with less than 20K dimensions should be used with global context probabilities and $k = 0.7$; otherwise, local context probabilities without smoothing should be preferred with $k = 1.4$.
 
 \paragraph{Evaluation of heuristics}
 \label{sec:heuristic-evaluation}
 
-We evaluate the models selected using the heuristics described above against the best possible selection for a given dimensionality choice on the SimLex-999 dataset (refer to Figure~\ref{fig:simlex-ppmi-best-simlex}).
+We evaluate these heuristics by comparing the performance they give on SimLex-999 against that obtained using the best possible parameter selections (determined via an exhaustive search for each dimensionality choice); and the best models reported by \cite{TACL570} (see Figure~\ref{fig:simlex-ppmi-best-simlex}).
 
-Heuristics for \logNPMI/ and \logNCPMI/ pick the best possible models.
+For \logNPMI/ and \logNCPMI/, our heuristics pick the best possible models. For \logNSPMI/, where performance variance is low, the heuristics do well, giving performance no more than 0.01 points below the best configuration. For \SPMI/ and \NSPMI/ this difference is much higher. 
 
-The proposed heuristics work well for \logNSPMI/, where performance variance is low, the performance of models selected using the heuristics is not lower than 0.01 point of the best configuration. For \SPMI/ and \NSPMI/ this difference is much higher.
+Heuristics for \logNSCPMI/and \SCPMI/ follow the best selection, but with a wider gap than the SPMI models. In general $n$ weighted models do not perform as well as others. 
 
-Heuristics for \logNCPMI/ and \CPMI/ follow the best selection, but with a wider gap than the SPMI models. In general $n$ weighted models do not perform as good as others.
+$\log n$ weighting should be used with PMI, CPMI and SCPMI. High-dimensional SPMI models show the same behaviour, but if vector dimensionality is less than 10K, no weighting should be applied. SPMI and SCPMI should be preferred over CPMI and PMI.
 
-Finally, to see whether the heuristics are applicable to other datasets, we contrast the selected models with the best scores on the MEN dataset (see Figure~\ref{fig:simlex-ppmi-best-men}). Again, PMI and CPMI follow the best possible setup and there is a little gap between the chosen models and the best possible selection for SPMI and SCPMI.
+Finally, to see whether the heuristics transfer robustly, we repeat this comparison on the MEN dataset (see Figure~\ref{fig:simlex-ppmi-best-men}). Again, PMI and CPMI follow the best possible setup and there is a little gap between the chosen models and the best possible selection for SPMI and SCPMI.
+
+% \textbf{MP: is it worth including a line for the *worst* possible parameter selection too? Or for the average; or for the Levy/Goldberg "standard" parameters? That way the reader can see how much benefit the heuristics give. }
 
 \section{Conclusion}
 \label{sec:conclusion}
 
 This paper presents a systematic study of co-occurrence quantification focusing of the selection of parameters presented in \newcite{TACL570}. We replicate their recommendation for high-dimensional vector spaces, and show that with appropriate parameter selection it is possible to achieve comparable performance with low-dimensional spaces. As an outcome of such an analysis we propose a set of model selection heuristics that maximize performance.
 
-In general, model performance depends on vector dimensionality (the best setup with 50K dimensions is better than the best setup with 1K dimensions by 0.03 on SimLex-999). It is beneficial to experiment with dense and unsmoothed low-dimensional spaces ($k < 1$, global context probability); and sparse and smooth high-dimensional spaces ($k > 1$, $\alpha = 0.75$). However, these heuristics do not guarantee the best possible result for unweighted and $n$-weighted models because of the high variance of the corresponding scores. Based on this we suggest to use \logNSPMI/ or \logNSCPMI/ with the dimensionality of at least 20K to ensure good performance on lexical tasks.
+In general, model performance depends on vector dimensionality (the best setup with 50K dimensions is better than the best setup with 1K dimensions by 0.03 on SimLex-999). Low-dimensional spaces benefit from being dense and unsmoothed  ($k < 1$, global context probability); while high-dimensional spaces are better sparse and smooth  ($k > 1$, $\alpha = 0.75$). However, these heuristics do not guarantee the best possible result for unweighted and $n$-weighted models because of the high variance of the corresponding scores. Based on this we suggest to use \logNSPMI/ or \logNSCPMI/ with the dimensionality of at least 20K to ensure good performance on lexical tasks.
 
 %\bibliographystyle{acl}
 % remove publisher, month etc from conf proceedings:
