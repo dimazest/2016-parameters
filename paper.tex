@@ -15,17 +15,18 @@
 \usepackage{gensymb}
 \usepackage{marginnote}
 \usepackage{adjustbox}
+\usepackage{url}
 
-\makeatletter
-\newcommand{\@BIBLABEL}{\@emptybiblabel}
-\newcommand{\@emptybiblabel}[1]{}
-\makeatother
+% \makeatletter
+% \newcommand{\@BIBLABEL}{\@emptybiblabel}
+% \newcommand{\@emptybiblabel}[1]{}
+% \makeatother
 % \usepackage{hyperref}
 
-\sloppy
+% \sloppy
 
-% \aclfinalcopy % Uncomment this line for the final submission
-\def\aclpaperid{34} %  Enter the acl Paper ID here
+\aclfinalcopy % Uncomment this line for the final submission
+\def\aclpaperid{30} %  Enter the acl Paper ID here
 
 
 \usepackage{color}
@@ -43,17 +44,11 @@
 
 \title{Robust Co-occurrence Quantification for Lexical Distributional Semantics}
 
-% \author{First Author \\
-%   Affiliation / Address line 1 \\
-%   Affiliation / Address line 2 \\
-%   Affiliation / Address line 3 \\
-%   {\tt email@domain} \\\And
-%   Second Author \\
-%   Affiliation / Address line 1 \\
-%   Affiliation / Address line 2 \\
-%   Affiliation / Address line 3 \\
-%   {\tt email@domain} \\}
-
+\author{Dmitrijs Milajevs\qquad{}Mehrnoosh Sadrzadeh\qquad{}Matthew Purver\\
+  Queen Mary University of London\\
+  London, UK\\
+  {\tt \{d.milajevs,m.sadrzadeh,m.purver\}@qmul.ac.uk}
+}
 \date{}
 
 \newcommand{\BASEURL}{http://example.org}
@@ -96,7 +91,7 @@ Previous optimisations of parameters affecting the word-context association meas
 
 In contrast, much work on \emph{compositional} distributional semantics employs vectors with much fewer dimensions: e.g.~\textbf{2K} \cite{Grefenstette:2011:ESC:2145432.2145580,kartsadrqpl2014,milajevs-EtAl:2014:EMNLP2014}, \textbf{3K} \cite{Dinu:2010:MDS:1870658.1870771,milajevs-purver:2014:CVSC} or \textbf{10K} \cite{polajnar-clark:2014:EACL,Baroni2010nouns}. The most common reason thereof is that these models  assign tensors to functional words. For a vector space $V$ with $k$ dimensions,  a tensor $V \otimes V \cdots \otimes V$ of rank $n$ has $k^n$ dimensions. Adjectives and intransitive verbs have tensors of rank 2, transitive verbs are of rank 3; for coordinators, the rank can go up to 7. Taking $k = \textbf{200K}$ already results in a highly intractable tensor of $\textbf{8} \times \textbf{10}^{\textbf{15}}$ dimensions for a transitive verb. 
 
-An alternative way of obtaining a vector space with few dimensions, usually with just 100--500, is to use SVD as a part of Latent Semantic Analysis \cite{ARIS:ARIS1440380105} or another models such as SGNS \cite{mikolov2013efficient} and GloVe \cite{pennington2014glove}. However, these models take more time to instantiate in comparison to weighting of a co-occurrence matrix and bring more parameters to explore. In this work we focus on vector spaces that directly weight a co-occurrence matrix and report results for SVD, GloVe and SGNS from the study of \newcite{TACL570} for comparison.
+An alternative way of obtaining a vector space with few dimensions, usually with just 100--500, is the use of SVD as a part of Latent Semantic Analysis \cite{ARIS:ARIS1440380105} or another models such as SGNS \cite{mikolov2013efficient} and GloVe \cite{pennington2014glove}. However, these models take more time to instantiate in comparison to weighting of a co-occurrence matrix and bring more parameters to explore. In this work we focus on vector spaces that directly weight a co-occurrence matrix and report results for SVD, GloVe and SGNS from the study of \newcite{TACL570} for comparison.
 
 \input{figures/interaction-neg}
 
@@ -107,7 +102,7 @@ The mismatch of experiments with non-dense models in vector dimensionality betwe
 \item If not, can we derive suitable parameter selection heuristics which take account of dimensionality?
 \end{compactitem}
 
-To answer these, we perform a systematic study of distributional models with a rich set of parameters on two lexical datasets: SimLex-999 \cite{hill2014simlex} and MEN \cite{Bruni:2014:MDS:2655713.2655714}.
+To answer these questions, we perform a systematic study of distributional models with a rich set of parameters on SimLex-999  \cite{hill2014simlex}, a lexical \emph{similairty} dataset, and test selected models on MEN \cite{Bruni:2014:MDS:2655713.2655714}, a lexical \emph{relatedness} dataset.
 
 \section{Parameters}
 \label{sec:parameters}
@@ -190,12 +185,14 @@ We experiment with $\alpha$=1 (no smoothing) and $\alpha = 0.75$. We call this e
 \subsection{Vector dimensionality ($D$)}
 \label{sec:vect-dimens}
 
-As context words we select the 1K, 2K, 3K, 5K, 10K, 20K, 30K, 40K and 50K most frequent lemmatised nouns, verbs, adjectives and adverbs. All context words are part of speech tagged, but we do not distinguish between refined word types (e.g. intransitive vs. transitive versions of verbs).
+As context words we select the 1K, 2K, 3K, 5K, 10K, 20K, 30K, 40K and 50K most frequent lemmatised nouns, verbs, adjectives and adverbs. All context words are part of speech tagged, but we do not distinguish between refined word types (e.g.~intransitive vs. transitive versions of verbs).
 
 \section{Experiments}
 \label{sec:lexical-experiments}
 
-Table~\ref{tab:parameters} lists parameters and their values. As the source corpus we use the concatenation of Wackypedia and ukWaC \cite{Baroni2009} with a symmetric 5-word window \cite{milajevs-EtAl:2014:EMNLP2014}; our evaluation metric is the correlation with human judgements as is standard with SimLex \cite{hill2014simlex}. We derive our parameter selection heuristics by greedily selecting parameters (\texttt{cds}, \texttt{neg}) that lead to the highest average performance for each combination of frequency weighting, PMI variant and dimensionality $D$. Figures~\ref{fig:interaction-cds} and \ref{fig:interaction-neg} show the interaction of \texttt{cds} and \texttt{neg} with other parameters. We also vary the similarity measure (cosine and correlation  \cite{kiela-clark:2014:CVSC}), but do not report results here due to space limits.
+Table~\ref{tab:parameters} lists parameters and their values. As the source corpus we use the concatenation of Wackypedia and ukWaC \cite{Baroni2009} with a symmetric 5-word window \cite{milajevs-EtAl:2014:EMNLP2014}; our evaluation metric is the correlation with human judgements as is standard with SimLex \cite{hill2014simlex}. We derive our parameter selection heuristics by greedily selecting parameters (\texttt{cds}, \texttt{neg}) that lead to the highest average performance for each combination of frequency weighting, PMI variant and dimensionality $D$. Figures~\ref{fig:interaction-cds} and \ref{fig:interaction-neg} show the interaction of \texttt{cds} and \texttt{neg} with other parameters. We also vary the similarity measure (cosine and correlation  \cite{kiela-clark:2014:CVSC}), but do not report results here due to space limits.\footnotemark{}
+
+\footnotetext{The results are available at \url{http://www.eecs.qmul.ac.uk/~dm303/aclsrw2016/}}
 
 \paragraph{PMI and CPMI}
 
@@ -203,13 +200,13 @@ PMI should be used with global context probabilities. CPMI generally outperforms
 
 \paragraph{SPMI}
 
-10K dimensional \SPMI/ is the least sensitive to parameter selection. For models with $D>$ 20K, context distribution smoothing should be used with $\alpha = 0.75$; for $D<$ 20K, it is beneficial to use global context probabilities. Shifting also depends on the dimensionality: models with $D<$ 20K should set $k = 0.7$, but higher-dimensional models should set $k = 5$. There might be a finer-grained $k$ selection criteria; however, we do not report this to avoid overfitting.
+10K dimensional \SPMI/ is the least sensitive to parameter selection. For models with $D>$~20K, context distribution smoothing should be used with $\alpha = 0.75$; for $D<$~20K, it is beneficial to use global context probabilities. Shifting also depends on the dimensionality: models with $D<$~20K should set $k = 0.7$, but higher-dimensional models should set $k = 5$. There might be a finer-grained $k$ selection criteria; however, we do not report this to avoid overfitting.
 
 \input{figures/best}
 
-\logNSPMI/ should be used with global context probabilities for models with $D<$ 20K. For higher-dimensional spaces, smoothing should be applied with $\alpha = 0.75$, as with \SPMI/. Shifting should be applied with $k = 0.5$ for models with $D<$ 20K,  and $k = 1.4$ for $D>$ 20K. In contrast to \SPMI/, which might require change of $k$ as the dimensionality increases, $k = 1.4$ is a much more robust choice for \logNSPMI/.
+\logNSPMI/ should be used with global context probabilities for models with $D<$~20K. For higher-dimensional spaces, smoothing should be applied with $\alpha = 0.75$, as with \SPMI/. Shifting should be applied with $k = 0.5$ for models with $D<$ 20K,  and $k = 1.4$ for $D>$ 20K. In contrast to \SPMI/, which might require change of $k$ as the dimensionality increases, $k = 1.4$ is a much more robust choice for \logNSPMI/.
 
-\NSPMI/ gives good results with local context probabilities ($\alpha = 1$). Models with $D<$ 20K  should use $k = 1.4$, otherwise $k = 5$ is preferred.
+\NSPMI/ gives good results with local context probabilities ($\alpha = 1$). Models with $D<$~20K  should use $k = 1.4$, otherwise $k = 5$ is preferred.
 
 \paragraph{SCPMI}
 
@@ -222,7 +219,7 @@ For \logNSCPMI/, models with $D<$ 20K should use global context probabilities an
 \paragraph{Evaluation of heuristics}
 \label{sec:heuristic-evaluation}
 
-We evaluate these heuristics by comparing the performance they give on SimLex-999 against that obtained using the best possible parameter selections (determined via an exhaustive search at each dimensionality setting). We also compare them to the best scores reported by \newcite{TACL570} for their model, word2vec-SGNS \cite{mikolov2013efficient} and GloVe \cite{pennington2014glove} -- see Figure~\ref{fig:best-simlex} (only the better-performing SPMI and SCPMI are shown).
+We evaluate these heuristics by comparing the performance they give on SimLex-999 against that obtained using the best possible parameter selections (determined via an exhaustive search at each dimensionality setting). We also compare them to the best scores reported by \newcite{TACL570} for their model (PMI and SVD), word2vec-SGNS \cite{mikolov2013efficient} and GloVe \cite{pennington2014glove} -- see Figure~\ref{fig:best-simlex} (only the better-performing SPMI and SCPMI are shown).
 
 For \logNPMI/ and \logNCPMI/, our heuristics pick the best possible models. For \logNSPMI/, where performance variance is low, the heuristics do well, giving a performance of no more than 0.01 points below the best configuration. For \SPMI/ and \NSPMI/ the difference is higher. With \logNSCPMI/ and \SCPMI/, the heuristics follow the best selection, but with a wider gap than the SPMI models. In general $n$-weighted models do not perform as well as others.
 
@@ -244,21 +241,22 @@ Finally, to see whether the heuristics transfer robustly, we repeat this compari
     This work       & 0.385      & 0.765 \\
     \bottomrule
   \end{tabular}
-  \caption{\textbf{Results.} Our model in comparison to the previous work. On the similarity dataset our model is 0.008 points behind a PPMI model, however on the relatedness dataset 0.020 points above, note the difference in dimensionality and source corpora, and window size. SVD and SGNS and GloVe numbers are given for comparison. $^*$Results reported by \newcite{TACL570}.}
+  \caption{\textbf{Our model in comparison to the previous work.} On the similarity dataset our model is 0.008 points behind a PPMI model, however on the relatedness dataset 0.020 points above. Note the difference in dimensionality and source corpora, and window size. SVD, SGNS and GloVe numbers are given for comparison. $^*$Results reported by \newcite{TACL570}.}
 \label{tab:results}
 \end{table}
-
 
 \section{Conclusion}
 \label{sec:conclusion}
 
-This paper presents a systematic study of co-occurrence quantification focusing on the selection of parameters presented in \newcite{TACL570}. We replicate their recommendation for high-dimensional vector spaces, and show that with appropriate parameter selection it is possible to achieve comparable performance with spaces of dimensionallity of 1K to 50K, and propose a set of model selection heuristics that maximizes performance. We foresee the results of the paper are generalisable to other experiments, since model selection was performed on a similarity dataset, and was additionally tested on a relatedness dataset.
+This paper presents a systematic study of co-occurrence quantification focusing on the selection of parameters presented in \newcite{TACL570}. We replicate their recommendation for high-dimensional vector spaces, and show that with appropriate parameter selection it is possible to achieve comparable performance with spaces of dimensionality of 1K to 50K, and propose a set of model selection heuristics that maximizes performance. We foresee the results of the paper are generalisable to other experiments, since model selection was performed on a similarity dataset, and was additionally tested on a relatedness dataset.
 
-In general, model performance depends on vector dimensionality (the best setup with 50K dimensions is better than the best setup with 1K dimensions by 0.03 on SimLex-999). Spaces with few thousand dimensions benefit from being dense and unsmoothed  ($k < 1$, global context probability); while high-dimensional spaces are better sparse and smooth  ($k > 1$, $\alpha = 0.75$). However, these heuristics do not guarantee the best possible result for unweighted and $n$-weighted models because of the high variance of the corresponding scores. Based on this we suggest the use of \logNSPMI/ or \logNSCPMI/ with dimensionality of at least 20K to ensure good performance on lexical tasks.
+In general, model performance depends on vector dimensionality (the best setup with 50K dimensions is better than the best setup with 1K dimensions by 0.03 on SimLex-999). Spaces with few thousand dimensions benefit from being dense and unsmoothed  ($k < 1$, global context probability); while high-dimensional spaces are better sparse and smooth  ($k > 1$, $\alpha = 0.75$). However, for unweighted and $n$-weighted models, these heuristics do not guarantee the best possible result because of the high variance of the corresponding scores. Based on this we suggest to use \logNSPMI/ or \logNSCPMI/ with dimensionality of at least 20K to ensure good performance on lexical tasks.
 
-%\bibliographystyle{acl}
-% remove publisher, month etc from conf proceedings:
-% \bibliographystyle{acl-short}
+\section{Acknowledgements}
+
+We thank the anonymous reviewers for their comments. Support from EPSRC grant EP/J002607/1 is gratefully acknowledged by Milajevs and Sadrzadeh..
+Purver is partly supported by ConCreTe: the project ConCreTe acknowledges the financial support of the Future and Emerging Technologies (FET) programme within the Seventh Framework Programme for Research of the European Commission, under FET grant number 611733.
+
 \bibliographystyle{acl2016}
 \balance
 \bibliography{references,dmilajevs_publications}
