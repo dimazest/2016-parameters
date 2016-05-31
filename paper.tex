@@ -87,7 +87,7 @@ Previous optimisations of parameters affecting the word-context association meas
 \section{Introduction}
 \label{sec:introduction}
 
-Words that occur in similar context have similar meaning \cite{harris1954distributional}. Thus the meaning of a word can be modeled by counting its co-occurrence with neighboring words in a corpus. Distributional models of meaning represent co-occurrence information in a vector space, where the dimensions are the neighboring words and the values are co-occurrence counts. Successful models need to be able to discriminate co-occurrence information, as not all co-occurrence counts are equally useful, for instance, the co-occurrence with the article \textit{the} is less informative than with a word \textit{existence}. Another fundamental question is the vector space dimensionality and what neighbor words correspond to them.
+Words that occur in similar context have similar meaning \cite{harris1954distributional}. Thus the meaning of a word can be modeled by counting its co-occurrence with neighboring words in a corpus. Distributional models of meaning represent co-occurrence information in a vector space, where the dimensions are the neighboring words and the values are co-occurrence counts. Successful models need to be able to discriminate co-occurrence information, as not all co-occurrence counts are equally useful, for instance, the co-occurrence with the article \textit{the} is less informative than with the noun \textit{existence}. Another fundamental question is the vector space dimensionality and what neighbor words should correspond to them.
 
 \newcite{TACL570} propose optimisations for co-occurrence-based distributional models, using parameters adopted from predictive models \cite{mikolov2013efficient}: \emph{shifting} and \emph{context distribution smoothing}. Their experiments and thus their parameter  recommendations use high-dimensional vector spaces with word vector dimensionality of almost \textbf{200K}, and many recent state-of-the-art results in lexical distributional semantics have been obtained using vectors with similarly high dimensionality  \cite{baroni-dinu-kruszewski:2014:P14-1,kiela-clark:2014:CVSC,lapesa2014large}.
 
@@ -243,7 +243,7 @@ Finally, to see whether the heuristics transfer robustly, we repeat this compari
     This work       & 0.385      & 0.765 \\
     \bottomrule
   \end{tabular}
-  \caption{\textbf{Our model in comparison to the previous work.} On the similarity dataset our model is 0.008 points behind a PPMI model, however on the relatedness dataset 0.020 points above. Note the difference in dimensionality and source corpora, and window size. SVD, SGNS and GloVe numbers are given for comparison. $^*$Results reported by \newcite{TACL570}.}
+  \caption{\textbf{Our model in comparison to the previous work.} On the similarity dataset our model is 0.008 points behind a PPMI model, however on the relatedness dataset 0.020 points above. Note the difference in dimensionality, source corpora and window size. SVD, SGNS and GloVe numbers are given for comparison. $^*$Results reported by \newcite{TACL570}.}
 \label{tab:results}
 \end{table}
 
