@@ -121,8 +121,7 @@ Most co-occurrence weighting schemes in distributional semantics are based on \e
 %
 %PMI in its raw form is problematic: non-observed co-occurrences lead to infinite PMI values, making it impossible to compute similarity. A common ``fix'' to this problem is to replace all infinities with zeroes, and we use PMI hereafter to refer to a weighting with this fix.
 %
-As commonly done, we replace the infinite PMI values with zeroes and use PMI hereafter to refer to a
-weighting with this fix.
+As commonly done, we replace the infinite PMI values with zeroes and use PMI hereafter to refer to a weighting with this fix.
 %
 An alternative solution is to increment the probability ratio by 1; we refer to this as \textit{compressed PMI} (CPMI):
 %
@@ -175,7 +174,7 @@ In addition to the extreme $1$ and $n$ weightings, we also experiment with a $\l
   P_{\alpha}(x) = \frac{n(x)^{\alpha}}{\sum_{c}n(c)^{\alpha}}
 \end{equation}
 %
-We experiment with $\alpha$=1 (no smoothing) and $\alpha = 0.75$. We call this estimation method \emph{local context probability}; we can also estimate a \emph{global context probability} based on the size of the corpus $C$:
+We experiment with $\alpha=1$ (no smoothing) and $\alpha = 0.75$. We call this estimation method \emph{local context probability}; we can also estimate a \emph{global context probability} based on the size of the corpus $C$:
 %
 \begin{equation}
   \label{eq:cds-nan}
@@ -256,7 +255,7 @@ In general, model performance depends on vector dimensionality (the best setup w
 
 \section*{Acknowledgements}
 
-We thank the anonymous reviewers for their comments. Support from EPSRC grant EP/J002607/1 is gratefully acknowledged by Milajevs and Sadrzadeh..
+We thank the anonymous reviewers for their comments. Support from EPSRC grant EP/J002607/1 is gratefully acknowledged by Milajevs and Sadrzadeh.
 Purver is partly supported by ConCreTe: the project ConCreTe acknowledges the financial support of the Future and Emerging Technologies (FET) programme within the Seventh Framework Programme for Research of the European Commission, under FET grant number 611733.
 
 \bibliographystyle{acl2016}
