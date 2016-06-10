@@ -25,7 +25,7 @@
 
 % \sloppy
 
-% \aclfinalcopy % Uncomment this line for the final submission
+\aclfinalcopy % Uncomment this line for the final submission
 \def\aclpaperid{30} %  Enter the acl Paper ID here
 
 
@@ -33,7 +33,7 @@
 \newcommand{\todo}[1]{}
 \renewcommand{\todo}[1]{{\color{red} TODO: {#1}}}
 
-%\renewcommand{\baselinestretch}{0.95}
+% \renewcommand{\baselinestretch}{0.95}
 
 %\setlength\titlebox{5cm}
 
@@ -87,22 +87,22 @@ Previous optimisations of parameters affecting the word-context association meas
 \section{Introduction}
 \label{sec:introduction}
 
-Words that occur in similar context have similar meaning \cite{harris1954distributional}. Thus the meaning of a word can be modeled by counting its co-occurrence with neighboring words in a corpus. Distributional models of meaning represent co-occurrence information in a vector space, where the dimensions are the neighboring words and the values are co-occurrence counts. Successful models need to be able to discriminate co-occurrence information, as not all co-occurrence counts are equally useful, for instance, the co-occurrence with the article \textit{the} is less informative than with the noun \textit{existence}. Another fundamental question is the vector space dimensionality and what neighbor words should correspond to them.
+Words that occur in similar context have similar meaning \cite{harris1954distributional}. Thus the meaning of a word can be modeled by counting its co-occurrence with neighboring words in a corpus. Distributional models of meaning represent co-occurrence information in a vector space, where the dimensions are the neighboring words and the values are co-occurrence counts. Successful models need to be able to discriminate co-occurrence information, as not all co-occurrence counts are equally useful, for instance, the co-occurrence with the article \textit{the} is less informative than with the noun \textit{existence}. The discrimination is usually achieved by weighting of co-occurrence counts. Another fundamental question in vector space design is the vector space dimensionality and what neighbor words should correspond to them.
 
 \newcite{TACL570} propose optimisations for co-occurrence-based distributional models, using parameters adopted from predictive models \cite{mikolov2013efficient}: \emph{shifting} and \emph{context distribution smoothing}. Their experiments and thus their parameter  recommendations use high-dimensional vector spaces with word vector dimensionality of almost \textbf{200K}, and many recent state-of-the-art results in lexical distributional semantics have been obtained using vectors with similarly high dimensionality  \cite{baroni-dinu-kruszewski:2014:P14-1,kiela-clark:2014:CVSC,lapesa2014large}.
 
 In contrast, much work on \emph{compositional} distributional semantics employs vectors with much fewer dimensions: e.g.~\textbf{2K} \cite{Grefenstette:2011:ESC:2145432.2145580,kartsadrqpl2014,milajevs-EtAl:2014:EMNLP2014}, \textbf{3K} \cite{Dinu:2010:MDS:1870658.1870771,milajevs-purver:2014:CVSC} or \textbf{10K} \cite{polajnar-clark:2014:EACL,Baroni2010nouns}. The most common reason thereof is that these models  assign tensors to functional words. For a vector space $V$ with $k$ dimensions,  a tensor $V \otimes V \cdots \otimes V$ of rank $n$ has $k^n$ dimensions. Adjectives and intransitive verbs have tensors of rank 2, transitive verbs are of rank 3; for coordinators, the rank can go up to 7. Taking $k = \textbf{200K}$ already results in a highly intractable tensor of $\textbf{8} \times \textbf{10}^{\textbf{15}}$ dimensions for a transitive verb.
 
-An alternative way of obtaining a vector space with few dimensions, usually with just 100--500, is the use of SVD as a part of Latent Semantic Analysis \cite{ARIS:ARIS1440380105} or another models such as SGNS \cite{mikolov2013efficient} and GloVe \cite{pennington2014glove}. However, these models take more time to instantiate in comparison to weighting of a co-occurrence matrix, bring more parameters to explore and produce vector spaces with uninterpretable dimensions. In this work we focus on vector spaces that directly weight a co-occurrence matrix and report results for SVD, GloVe and SGNS from the study of \newcite{TACL570} for comparison.
+An alternative way of obtaining a vector space with few dimensions, usually with just 100--500, is the use of SVD as a part of Latent Semantic Analysis \cite{ARIS:ARIS1440380105} or another models such as SGNS \cite{mikolov2013efficient} and GloVe \cite{pennington2014glove}. However, these models take more time to instantiate in comparison to weighting of a co-occurrence matrix, bring more parameters to explore and produce vector spaces with uninterpretable dimensions (vector space dimension interpretation is used by some lexical models, for example, \newcite{McGregorEtAl15JAGI}, and the passage from formal semantics to tensor models relies on it \cite{DBLP:journals/corr/abs-1003-4394}). In this work we focus on vector spaces that directly weight a co-occurrence matrix and report results for SVD, GloVe and SGNS from the study of \newcite{TACL570} for comparison.
 
-The mismatch of experiments with non-dense models in vector dimensionality between lexical and compositional tasks gives rise to a number of questions:
+The mismatch of recent experiments with non-dense models in vector dimensionality between lexical and compositional tasks gives rise to a number of questions:
 \begin{compactitem}
 \item To what extent does model performance depend on vector dimensionality?
 \item Do parameters influence 200K and 1K dimensional models similarly? Can the findings of \newcite{TACL570} be directly applied to models with a few thousand dimensions?
 \item If not, can we derive suitable parameter selection heuristics which take account of dimensionality?
 \end{compactitem}
 
-To answer these questions, we perform a systematic study of distributional models with a rich set of parameters on SimLex-999  \cite{hill2014simlex}, a lexical \emph{similairty} dataset, and test selected models on MEN \cite{Bruni:2014:MDS:2655713.2655714}, a lexical \emph{relatedness} dataset. Both datasets are currently widely used and surpass datasets stemming from information retrieval, WordSim-353 \cite{2002:PSC:503104.503110}, and computational linguistics, RG65 \cite{Rubenstein:1965:CCS:365628.365657}, in quantity by having more entries and quality by attention to evaluated relation.
+To answer these questions, we perform a systematic study of distributional models with a rich set of parameters on SimLex-999  \cite{hill2014simlex}, a lexical \emph{similairty} dataset, and test selected models on MEN \cite{Bruni:2014:MDS:2655713.2655714}, a lexical \emph{relatedness} dataset. The reason for choosing these is that they are currently widely used and surpass datasets stemming from information retrieval, WordSim-353 \cite{2002:PSC:503104.503110}, and computational linguistics, RG65 \cite{Rubenstein:1965:CCS:365628.365657}, in quantity by having more entries and in quality by attention to evaluated relations.
 
 \section{Parameters}
 \label{sec:parameters}
@@ -139,14 +139,16 @@ As the result, the space does not contain negative values, but has the same spar
 \subsection{Shifted PMI (\texttt{neg})}
 \label{sec:shifted-pmi}
 
-Many approaches use only \emph{positive} PMI values, as  negative PMI values may not positively contribute to model performance and sparser matrices are more computationally tractable \cite{Turney:2010:FMV:1861751.1861756}. This can be generalised to an additional cutoff parameter $k$ (\texttt{neg}) following \newcite{TACL570}, giving our third PMI variant (abbreviated as SPMI):
+Many approaches use only \emph{positive} PMI values, as  negative PMI values may not positively contribute to model performance and sparser matrices are more computationally tractable \cite{Turney:2010:FMV:1861751.1861756}. This can be generalised to an additional cutoff parameter $k$ (\texttt{neg}) following \newcite{TACL570}, giving our third PMI variant (abbreviated as SPMI):\footnotemark{}
 %
 \begin{equation}
   \label{eq:ppmi}
   \operatorname{SPMI_k} = \max (0, \operatorname{PMI}(x, y) - \log k)
 \end{equation}
 %
-When $k = 1$ SPMI is equivalent to positive PMI. $k > 1$ increases the underlying matrix sparsity by keeping only highly associated co-occurrence pairs. $k < 1$ decreases the underlying matrix sparsity by including some unassociated co-occurrence pairs, which are usually excluded due to unreliability of probability estimation \cite{Dagan:1993:CWS:981574.981596}.
+When $k = 1$ SPMI is equivalent to positive PMI. $k > 1$ increases the underlying matrix sparsity by keeping only highly associated co-occurrence pairs. $k < 1$ decreases the underlying matrix sparsity by including some unassociated co-occurrence pairs, which are usually excluded due to unreliability of probability estimates \cite{Dagan:1993:CWS:981574.981596}.
+
+\footnotetext{SPMI is different from CPMI because $\log\frac{P(x, y)}{P(x)P(y)} - \log{}k = \log\frac{P(x, y)}{P(x)(P(y)k} \neq \log\Big( 1 + \frac{P(x,y)}{P(x)P(y)} \Big)$.}
 
 We can apply the same idea to CPMI:
 %
@@ -191,18 +193,20 @@ We experiment with $\alpha=1$ (no smoothing) and $\alpha = 0.75$. We call this e
 
 As context words we select the 1K, 2K, 3K, 5K, 10K, 20K, 30K, 40K and 50K most frequent lemmatised nouns, verbs, adjectives and adverbs. All context words are part of speech tagged, but we do not distinguish between refined word types (e.g.~intransitive vs.~transitive versions of verbs) and do not perform stop word filtering.
 
-\section{Experiments}
+\input{figures/interaction-neg}
+
+\section{Experimental setup}
 \label{sec:lexical-experiments}
 
 Table~\ref{tab:parameters} lists parameters and their values. As the source corpus we use the concatenation of Wackypedia and ukWaC \cite{Baroni2009} with a symmetric 5-word window \cite{milajevs-EtAl:2014:EMNLP2014}; our evaluation metric is the correlation with human judgements as is standard with SimLex \cite{hill2014simlex}. We derive our parameter selection heuristics by greedily selecting parameters (\texttt{cds}, \texttt{neg}) that lead to the highest average performance for each combination of frequency weighting, PMI variant and dimensionality $D$. Figures~\ref{fig:interaction-cds} and \ref{fig:interaction-neg} show the interaction of \texttt{cds} and \texttt{neg} with other parameters. We also vary the similarity measure (cosine and correlation  \cite{kiela-clark:2014:CVSC}), but do not report results here due to space limits.\footnotemark{}
 
 \footnotetext{The results are available at \url{http://www.eecs.qmul.ac.uk/~dm303/aclsrw2016/}}
 
+\section{Heuristics}
+
 \paragraph{PMI and CPMI}
 
 PMI should be used with global context probabilities. CPMI generally outperforms PMI, with less sensitivity to parameters; \NCPMI/ and \logNCPMI/ should be used with local context probabilities and \CPMI/ should apply context distribution smoothing with $\alpha = 0.75$.
-
-\input{figures/interaction-neg}
 
 \paragraph{SPMI}
 
@@ -220,16 +224,16 @@ With \NSCPMI/ and $D<$ 20K, global context probability should be used with $k = 
 
 For \logNSCPMI/, models with $D<$ 20K should use global context probabilities and $k = 0.7$; otherwise, local context probabilities without smoothing should be preferred with $k = 1.4$.
 
-\paragraph{Evaluation of heuristics}
+\input{figures/best}
+
+\section{Evaluation of heuristics}
 \label{sec:heuristic-evaluation}
 
-We evaluate these heuristics by comparing the performance they give on SimLex-999 against that obtained using the best possible parameter selections (determined via an exhaustive search at each dimensionality setting). We also compare them to the best scores reported by \newcite{TACL570} for their model (PMI and SVD), word2vec-SGNS \cite{mikolov2013efficient} and GloVe \cite{pennington2014glove} -- see Figure~\ref{fig:best-simlex} (only the better-performing SPMI and SCPMI are shown).
+We evaluate these heuristics by comparing the performance they give on SimLex-999 against that obtained using the best possible parameter selections (determined via an exhaustive search at each dimensionality setting). We also compare them to the best scores reported by \newcite{TACL570} for their model (PMI and SVD), word2vec-SGNS \cite{mikolov2013efficient} and GloVe \cite{pennington2014glove}---see Figure~\ref{fig:best-simlex}, where only the better-performing SPMI and SCPMI are shown.
 
 For \logNPMI/ and \logNCPMI/, our heuristics pick the best possible models. For \logNSPMI/, where performance variance is low, the heuristics do well, giving a performance of no more than 0.01 points below the best configuration. For \SPMI/ and \NSPMI/ the difference is higher. With \logNSCPMI/ and \SCPMI/, the heuristics follow the best selection, but with a wider gap than the SPMI models. In general $n$-weighted models do not perform as well as others.
 
-Overall, $\log n$ weighting should be used with PMI, CPMI and SCPMI. High-dimensional SPMI models show the same behaviour, but if $D<$ 10K, no weighting should be applied. SPMI and SCPMI should be preferred over CPMI and PMI. As Figure~\ref{fig:global-best-simlex} shows, our heuristics give performance close to the optimum for any dimensionality, with a large improvement over both an average parameter setting and the parameters suggested by \cite{TACL570} in a high-dimensional setting.\footnote{Our results using \newcite{TACL570}'s parameters differ slightly from theirs due to different window sizes (5 vs 2).}
-
-\input{figures/best}
+Overall, $\log n$ weighting should be used with PMI, CPMI and SCPMI. High-dimensional SPMI models show the same behaviour, but if $D<$ 10K, no weighting should be applied. SPMI and SCPMI should be preferred over CPMI and PMI. As Figure~\ref{fig:global-best-simlex} shows, our heuristics give performance close to the optimum for any dimensionality, with a large improvement over both an average parameter setting and the parameters suggested by \newcite{TACL570} in a high-dimensional setting.\footnote{Our results using \newcite{TACL570}'s parameters differ slightly from theirs due to different window sizes (5 vs 2).}
 
 Finally, to see whether the heuristics transfer robustly, we repeat this comparison on the MEN dataset (see Figures~\ref{fig:best-men}, \ref{fig:global-best-men}). Again, PMI and CPMI follow the best possible setup, with SPMI and SCPMI showing only a slight drop below ideal performance; and again, the heuristic settings give performance close to the optimum, and significantly higher than average or standard parameters.
 
@@ -258,10 +262,16 @@ In general, model performance depends on vector dimensionality (the best setup w
 \label{tab:results}
 \end{table}
 
+There are several directions for the future work. Our experiments show that models with a few thousand dimensions are competitive with more dimensional models, see Figure~\ref{fig:best}. Moreover, for these models, unsmoothed probabilities give the best result. It might be the case that due to the large size of the corpus used, the probability estimates for the most frequent words are reliable without smoothing. More experiments need to be done to see whether this holds for smaller corpora.
+
+The similarity datasets are transferred to other languages \cite{DBLP:journals/corr/LeviantR15}. The future work might investigate whether our results hold for languages other than English.
+
+The qualitative influence of the parameters should be studied in depth with extensive error analysis on how parameter selection changes similarity judgements.
+
 \section*{Acknowledgements}
 
-We thank the anonymous reviewers for their comments. Support from EPSRC grant EP/J002607/1 is gratefully acknowledged by Milajevs and Sadrzadeh.
-Purver is partly supported by ConCreTe: the project ConCreTe acknowledges the financial support of the Future and Emerging Technologies (FET) programme within the Seventh Framework Programme for Research of the European Commission, under FET grant number 611733.
+We thank Ann Copestake for her valuable comments as part of the ACL SRW mentorship program and the anonymous reviewers for their comments. Support from EPSRC grant EP/J002607/1 is gratefully acknowledged by Dmitrijs Milajevs and Mehrnoosh Sadrzadeh.
+Matthew Purver is partly supported by ConCreTe: the project ConCreTe acknowledges the financial support of the Future and Emerging Technologies (FET) programme within the Seventh Framework Programme for Research of the European Commission, under FET grant number 611733.
 
 \bibliographystyle{acl2016}
 \balance
